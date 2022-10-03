@@ -31,3 +31,17 @@ jobs:
       #----------------------------------------------
       - name: Run tests
         run: poetry run pytest
+    services:
+      postgres:
+        image: postgres:10
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: pg-pass
+          POSTGRES_DB: pixyDocsApi-unknown
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+        - 5432:5432
