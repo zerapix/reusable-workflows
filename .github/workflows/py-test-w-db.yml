@@ -4,6 +4,12 @@ name: test
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg-pass
+      POSTGRES_DB: unitTestingDB-unit
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: localhost
     steps:
       #----------------------------------------------
       #       Check-out repo, set-up python + poetry
