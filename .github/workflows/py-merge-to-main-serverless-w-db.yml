@@ -43,7 +43,7 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
         # Hard-coding the environment for now, when we start dealing with other environments
         # look into environment feature of github actions/workflows.
-        run: yarn sls deploy -s dev
+        run: yarn sls deploy --verbose --stage dev
         env:
           # todo: checkout what we can do with `SERVERLESS_ACCESS_KEY`:
           # SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
