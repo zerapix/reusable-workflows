@@ -3,7 +3,8 @@ description: 'Reusable action to setup python, poetry and project dependencies i
 runs:
   using: "composite"
   steps:
-    - uses: zerapix/reusable-workflows/py-setup-project@feature/sc-5232-pixydocsapi-workflow-for-deployment
+    - name: Setup Python Project
+      uses: zerapix/reusable-workflows/py-setup-project@feature/sc-5232-pixydocsapi-workflow-for-deployment
     - name: Run tests
       shell: bash
       run: poetry run pytest
