@@ -1,14 +1,14 @@
-# Normally called when a merge to the main branch happens.
 on:
   workflow_call:
     inputs:
-     package-name:
-        required: true
-        type: string
-        description: Python package we are versioning/deploying.
-name: merge-to-main-release-please
+      real-publish:
+        required: false
+        type: boolean
+        default: false
+        description: If true, will publish to prod pypi, otherwise it will publish to test. Defaults to false.
+name: force-publish
 jobs:
-  release-please:
+  force-publish:
     runs-on: ubuntu-latest
     env:
       POSTGRES_USER: postgres
@@ -18,14 +18,6 @@ jobs:
       POSTGRES_HOST: localhost
     steps:
       - uses: zerapix/reusable-workflows/py-run-tests@feature/sc-5232-pixydocsapi-workflow-for-deployment
-      #----------------------------------------------
-      # release-please, increments version and tags releases.
-      #----------------------------------------------
-      - uses: google-github-actions/release-please-action@v3
-        id: release
-        with:
-          release-type: python
-          package-name: singleton-type
       #----------------------------------------------
       # deploy via serverless
       #----------------------------------------------
