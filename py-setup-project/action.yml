@@ -9,8 +9,10 @@ runs:
     - name: Check out repository
       uses: actions/checkout@v3
     - name: Install poetry
+      shell: bash
       run: pipx install poetry
     - name: Read Needed Python Version
+      shell: bash
       run: |
         PY_VER=$(sed -n 's/^ *python *= *"[~^]*\([0-9\.]*\)"/\1/p' pyproject.toml)
         echo "PY_VERSION=$PY_VER" >> $GITHUB_ENV
@@ -24,6 +26,8 @@ runs:
     #         Install dependencies + self
     #----------------------------------------------
     - name: Install Dependencies
+      shell: bash
       run: poetry install --no-interaction --no-root
     - name: Install Self
+      shell: bash
       run: poetry install --no-interaction
