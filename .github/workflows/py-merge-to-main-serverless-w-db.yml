@@ -10,6 +10,12 @@ name: merge-to-main-release-please
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg-pass
+      POSTGRES_DB: unitTestingDB-unit
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: localhost
     steps:
       - uses: zerapix/reusable-workflows/py-run-tests@feature/sc-5232-pixydocsapi-workflow-for-deployment
       #----------------------------------------------
