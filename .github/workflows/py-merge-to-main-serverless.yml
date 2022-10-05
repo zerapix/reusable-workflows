@@ -1,6 +1,11 @@
 # Normally called when a merge to the main branch happens.
 on:
   workflow_call:
+    inputs:
+     package-name:
+        required: true
+        type: string
+        description: Python package we are versioning/deploying.
 name: merge-to-main-release-please
 jobs:
   release-please:
