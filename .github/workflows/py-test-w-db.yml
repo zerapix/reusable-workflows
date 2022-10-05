@@ -1,3 +1,4 @@
+# This workflow is used to run unit tests on something that needs an RDS database running.
 on:
   workflow_call:
 name: test
@@ -18,13 +19,16 @@ jobs:
         uses: actions/checkout@v3
       - name: Install poetry
         run: pipx install poetry
+      - name: Read Needed Python Version
+        run: |
+          PY_VER=$(sed -n 's/^ *python *= *"[~^]*\([0-9\.]*\)"/\1/p' pyproject.toml)
+          echo "PY_VERSION=$PY_VER" >> $GITHUB_ENV
       - name: Set up python
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: ${{ env.PY_VERSION }}
           cache: poetry
-      - run: poetry install
       #----------------------------------------------
       #         Install dependencies + self
       #----------------------------------------------
