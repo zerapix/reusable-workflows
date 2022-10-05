@@ -1,11 +1,5 @@
 on:
   workflow_call:
-    inputs:
-      real-publish:
-        required: false
-        type: boolean
-        default: false
-        description: If true, will publish to prod pypi, otherwise it will publish to test. Defaults to false.
 name: force-publish
 jobs:
   force-publish:
@@ -23,16 +17,13 @@ jobs:
       #----------------------------------------------
       - name: Setup Node.js
         id: setup_node
-        if: ${{ steps.release.outputs.release_created }}
         uses: actions/setup-node@v3
         with:
           node-version: "18"
           cache: "yarn"
       - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
         run: yarn install --frozen-lockfile
-        if: ${{ steps.release.outputs.release_created }}
       - name: Serverless Deploy to dev
-        if: ${{ steps.release.outputs.release_created }}
         # Hard-coding the environment for now, when we start dealing with other environments
         # look into environment feature of github actions/workflows.
         run: yarn sls deploy -s dev
