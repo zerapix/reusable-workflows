@@ -12,33 +12,8 @@ jobs:
       POSTGRES_PORT: 5432
       POSTGRES_HOST: localhost
     steps:
-      #----------------------------------------------
-      #       Check-out repo, set-up python + poetry
-      #----------------------------------------------
-      - name: Check out repository
-        uses: actions/checkout@v3
-      - name: Install poetry
-        run: pipx install poetry
-      - name: Read Needed Python Version
-        run: |
-          PY_VER=$(sed -n 's/^ *python *= *"[~^]*\([0-9\.]*\)"/\1/p' pyproject.toml)
-          echo "PY_VERSION=$PY_VER" >> $GITHUB_ENV
-      - name: Set up python
-        id: setup-python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PY_VERSION }}
-          cache: poetry
-      #----------------------------------------------
-      #         Install dependencies + self
-      #----------------------------------------------
-      - name: Install Dependencies
-        run: poetry install --no-interaction --no-root
-      - name: Install Self
-        run: poetry install --no-interaction
-      #----------------------------------------------
-      #         Run test suite
-      #----------------------------------------------
+      - name: Setup Project
+        uses: zerapix/reusable-workflows/py-setup-project@feature/sc-5232-pixydocsapi-workflow-for-deployment
       - name: Run tests
         run: poetry run pytest
     services:
