@@ -1,0 +1,10 @@
+name: 'Setup Python Project + Run Unit Tests'
+description: 'Reusable action to setup python, poetry and project dependencies in a standard way.'
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      uses: zerapix/reusable-workflows/py-setup-project@feature/sc-5232-pixydocsapi-workflow-for-deployment
+    - name: Run tests
+      shell: bash
+      run: poetry run pytest

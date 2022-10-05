@@ -13,9 +13,7 @@ jobs:
       POSTGRES_HOST: localhost
     steps:
       - name: Setup Project
-        uses: zerapix/reusable-workflows/py-setup-project@feature/sc-5232-pixydocsapi-workflow-for-deployment
-      - name: Run tests
-        run: poetry run pytest
+        uses: zerapix/reusable-workflows/py-run-tests@feature/sc-5232-pixydocsapi-workflow-for-deployment
     services:
       postgres:
         image: postgres:13
