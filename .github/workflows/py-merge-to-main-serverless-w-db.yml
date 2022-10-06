@@ -26,7 +26,7 @@ jobs:
         with:
           release-type: python
           package-name: ${{ inputs.package-name }}
-          monorepo-tags: v/
+          monorepo-tags: true
           include-v-in-tag: false
 
       #----------------------------------------------
