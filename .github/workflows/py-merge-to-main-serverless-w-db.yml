@@ -26,8 +26,6 @@ jobs:
         with:
           release-type: python
           package-name: ${{ inputs.package-name }}
-          monorepo-tags: true
-          include-v-in-tag: false
 
       #----------------------------------------------
       # deploy via serverless
