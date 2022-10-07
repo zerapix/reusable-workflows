@@ -28,7 +28,9 @@ runs:
     - name: Serverless Deploy to dev
       # Hard-coding the environment for now, when we start dealing with other environments
       # look into environment feature of github actions/workflows.
-      run: yarn sls deploy --verbose --stage ${{ inputs.environment }}
+      run: |
+        yarn sls deploy --verbose --stage ${{ inputs.environment }}
+        yarn sls doctor
       shell: bash
       env:
         # todo: checkout what we can do with `SERVERLESS_ACCESS_KEY`:
