@@ -4,6 +4,12 @@ inputs:
   environment:
     description: Environmental name to deploy in.
     required: true
+  AWS_ACCESS_KEY_ID:
+    description: AWS Key ID to use while deploying.
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    description:  AWS Key Secret to use while deploying.
+    required: true
 runs:
   using: composite
   steps:
@@ -24,3 +30,9 @@ runs:
       # look into environment feature of github actions/workflows.
       run: yarn sls deploy --verbose --stage ${{ inputs.environment }}
       shell: bash
+      env:
+        # todo: checkout what we can do with `SERVERLESS_ACCESS_KEY`:
+        #  SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+        # todo: For now use AWS credentials directly
+        AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
