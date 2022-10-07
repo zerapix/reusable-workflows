@@ -10,6 +10,8 @@ name: merge-to-main-release-please
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    outputs:
+      created-release: ${{ steps.release.outputs.release_created }}
     env:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pg-pass
@@ -47,6 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     concurrency: deploy-dev
+    if: ${{ needs.create-release.created-release }}
     steps:
       - uses: zerapix/reusable-workflows/py-setup-project@feature/sc-5232-pixydocsapi-workflow-for-deployment
       - uses: zerapix/reusable-workflows/py-deploy-serverless@feature/sc-5232-pixydocsapi-workflow-for-deployment
