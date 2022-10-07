@@ -1,0 +1,44 @@
+name: Deploy To Environment
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy in.
+        type: environment
+        default: dev
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        default: dev
+        description: Environment to deploy in.
+jobs:
+  deploy:
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    concurrency: deploy-${{ inputs.environment }}
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg-pass
+      POSTGRES_DB: unitTestingDB-unit
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: localhost
+    steps:
+      - uses: zerapix/reusable-workflows/py-run-tests@feature/sc-5232-pixydocsapi-workflow-for-deployment
+      - uses: zerapix/reusable-workflows/py-deploy-serverless@feature/sc-5232-pixydocsapi-workflow-for-deployment
+        with:
+          environment: ${{ inputs.environment }}
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: pg-pass
+          POSTGRES_DB: pixyDocsApi-unknown
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+        - 5432:5432

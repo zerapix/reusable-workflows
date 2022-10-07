@@ -8,7 +8,7 @@ on:
         description: Python package we are versioning/deploying.
 name: merge-to-main-release-please
 jobs:
-  release-please:
+  create-release:
     runs-on: ubuntu-latest
     env:
       POSTGRES_USER: postgres
@@ -18,40 +18,13 @@ jobs:
       POSTGRES_HOST: localhost
     steps:
       - uses: zerapix/reusable-workflows/py-run-tests@feature/sc-5232-pixydocsapi-workflow-for-deployment
-      #----------------------------------------------
+
       # release-please, increments version and tags releases.
-      #----------------------------------------------
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
           release-type: python
           package-name: ${{ inputs.package-name }}
-
-      #----------------------------------------------
-      # deploy via serverless
-      #----------------------------------------------
-      - name: Setup Node.js
-        id: setup_node
-        if: ${{ steps.release.outputs.release_created }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-          cache: "yarn"
-      - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
-        run: yarn install --frozen-lockfile
-        if: ${{ steps.release.outputs.release_created }}
-      - name: Serverless Deploy to dev
-        if: ${{ steps.release.outputs.release_created }}
-        # Hard-coding the environment for now, when we start dealing with other environments
-        # look into environment feature of github actions/workflows.
-        run: yarn sls deploy --verbose --stage dev
-        env:
-          # todo: checkout what we can do with `SERVERLESS_ACCESS_KEY`:
-          # SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
-
-          # todo: For now use AWS credentials directly
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     services:
       postgres:
         image: postgres:13
@@ -66,3 +39,17 @@ jobs:
           --health-retries 5
         ports:
         - 5432:5432
+
+  # Create Separate Job, to distinguish release-creation from deployment
+  # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
+  deploy-release:
+    needs: create-release
+    runs-on: ubuntu-latest
+    environment: dev
+    concurrency: deploy-dev
+    steps:
+      - uses: zerapix/reusable-workflows/py-setup-project@feature/sc-5232-pixydocsapi-workflow-for-deployment
+      - uses: zerapix/reusable-workflows/py-deploy-serverless@feature/sc-5232-pixydocsapi-workflow-for-deployment
+        with:
+          environment: dev
+
