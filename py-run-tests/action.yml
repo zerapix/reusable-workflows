@@ -4,7 +4,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Python Project
-      uses: zerapix/reusable-workflows/py-setup-project@feature/sc-5232-pixydocsapi-workflow-for-deployment
+      uses: zerapix/reusable-workflows/py-setup-project@main
     - name: Run tests
       shell: bash
       run: poetry run pytest
