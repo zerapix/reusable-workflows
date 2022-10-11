@@ -1,6 +1,7 @@
+# This workflow is used to run unit tests on something that needs an RDS database running.
 on:
   workflow_call:
-name: test
+name: test-w-db
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,32 +12,8 @@ jobs:
       POSTGRES_PORT: 5432
       POSTGRES_HOST: localhost
     steps:
-      #----------------------------------------------
-      #       Check-out repo, set-up python + poetry
-      #----------------------------------------------
-      - name: Check out repository
-        uses: actions/checkout@v3
-      - name: Install poetry
-        run: pipx install poetry
-      - name: Set up python
-        id: setup-python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
-          cache: poetry
-      - run: poetry install
-      #----------------------------------------------
-      #         Install dependencies + self
-      #----------------------------------------------
-      - name: Install Dependencies
-        run: poetry install --no-interaction --no-root
-      - name: Install Self
-        run: poetry install --no-interaction
-      #----------------------------------------------
-      #         Run test suite
-      #----------------------------------------------
-      - name: Run tests
-        run: poetry run pytest
+      - name: Setup and Test Project
+        uses: zerapix/reusable-workflows/py-run-tests@main
     services:
       postgres:
         image: postgres:13

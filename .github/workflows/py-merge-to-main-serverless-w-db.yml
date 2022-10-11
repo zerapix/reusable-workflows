@@ -1,0 +1,66 @@
+# Normally called when a merge to the main branch happens.
+on:
+  workflow_call:
+    inputs:
+     package-name:
+        required: true
+        type: string
+        description: Python package we are versioning/deploying.
+name: merge-to-main-release-please
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      created-release: ${{ steps.release.outputs.release_created }}
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg-pass
+      POSTGRES_DB: unitTestingDB-unit
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: localhost
+    steps:
+      - uses: zerapix/reusable-workflows/py-run-tests@main
+
+      # release-please, increments version and tags releases.
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: python
+          package-name: ${{ inputs.package-name }}
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: pg-pass
+          POSTGRES_DB: pixyDocsApi-unknown
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+        - 5432:5432
+  create-release-output:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump out needs.create-release.outputs.created-release
+        run: echo '${{ toJSON(needs.create-release.outputs.created-release) }}'
+
+  # Create Separate Job, to distinguish release-creation from deployment
+  # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
+  deploy-release:
+    needs: create-release
+    runs-on: ubuntu-latest
+    environment: dev
+    concurrency: deploy-dev
+    if: ${{ needs.create-release.outputs.created-release }}
+    steps:
+      - uses: zerapix/reusable-workflows/py-setup-project@main
+      - uses: zerapix/reusable-workflows/py-deploy-serverless@main
+        with:
+          environment: dev
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
