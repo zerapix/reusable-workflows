@@ -32,6 +32,7 @@ runs:
         files: .github/hooks/sls-deploy-pre.sh
     - name: Run Pre-Serverless Hook Script
       if: steps.check_pre_serverless_hook_file.outputs.files_exists == 'true'
+      shell: bash
       run: bash .github/hooks/sls-deploy-pre.sh
       env:
         APP_ENV: ${{ inputs.environment }}
