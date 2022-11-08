@@ -8,8 +8,10 @@ runs:
   using: composite
   steps:
     - name: Build Library
+      shell: bash
       run: poetry build
     - name: Publish to Gemfury
-      run: |
-        poetry config http-basic.fury ${{inputs.GEMFURY_PUBLISH_TOKEN}} NOPASS
+      shell: bash
+      run: |poetry config http-basic.fury
+         ${{inputs.GEMFURY_PUBLISH_TOKEN}} NOPASS
         poetry publish -r fury
