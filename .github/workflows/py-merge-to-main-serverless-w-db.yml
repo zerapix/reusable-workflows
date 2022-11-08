@@ -20,6 +20,8 @@ jobs:
       POSTGRES_HOST: localhost
     steps:
       - uses: zerapix/reusable-workflows/py-run-tests@main
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
 
       # release-please, increments version and tags releases.
       - uses: google-github-actions/release-please-action@v3
@@ -52,6 +54,8 @@ jobs:
     if: ${{ needs.create-release.outputs.created-release }}
     steps:
       - uses: zerapix/reusable-workflows/py-setup-project@main
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
       - uses: zerapix/reusable-workflows/py-deploy-serverless@main
         with:
           environment: dev

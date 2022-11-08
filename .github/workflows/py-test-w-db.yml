@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Setup and Test Project
         uses: zerapix/reusable-workflows/py-run-tests@main
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
     services:
       postgres:
         image: postgres:13

@@ -9,6 +9,8 @@ jobs:
       created-release: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: zerapix/reusable-workflows/py-run-tests@main
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
       - name: Retrieve Project Package
         run: |
           PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
@@ -28,6 +30,8 @@ jobs:
     if: ${{ needs.create-release.outputs.created-release }}
     steps:
       - uses: zerapix/reusable-workflows/py-setup-project@main
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
       - uses: zerapix/reusable-workflows/py-publish-fury@main
         with:
           GEMFURY_PUBLISH_TOKEN: ${{ secrets.GEMFURY_PUBLISH_TOKEN }}

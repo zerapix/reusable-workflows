@@ -1,5 +1,9 @@
 name: 'Setup Python, Poetry and Project Deps'
 description: 'Reusable action to setup python, poetry and project dependencies in a standard way.'
+inputs:
+  GEMFURY_DEPLOY_TOKEN:
+    description: Gemfury Deploy Token
+    required: true
 runs:
   using: "composite"
   steps:
@@ -25,6 +29,9 @@ runs:
     #----------------------------------------------
     #         Install dependencies + self
     #----------------------------------------------
+    - name: Install Dependencies
+      shell: bash
+      run: poetry config http-basic.fury ${{inputs.GEMFURY_DEPLOY_TOKEN}} NOPASS
     - name: Install Dependencies
       shell: bash
       run: poetry install --no-interaction --no-root

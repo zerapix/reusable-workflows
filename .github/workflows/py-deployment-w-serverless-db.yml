@@ -25,6 +25,8 @@ jobs:
       POSTGRES_HOST: localhost
     steps:
       - uses: zerapix/reusable-workflows/py-run-tests@main
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
       - uses: zerapix/reusable-workflows/py-deploy-serverless@main
         with:
           environment: ${{ inputs.environment }}
