@@ -1,0 +1,33 @@
+# Normally called when a merge to the main branch happens.
+on:
+  workflow_call:
+name: merge-to-main-release-please
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      created-release: ${{ steps.release.outputs.release_created }}
+    steps:
+      - uses: zerapix/reusable-workflows/py-run-tests@main
+      - name: Retrieve Project Package
+        run: |
+          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
+          echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: python
+          package-name: ${{ env.PY_PKG }}
+
+  # Create Separate Job, to distinguish release-creation from deployment
+  # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
+  publish-release:
+    needs: create-release
+    runs-on: ubuntu-latest
+    concurrency: publish-dev
+    if: ${{ needs.create-release.outputs.created-release }}
+    steps:
+      - uses: zerapix/reusable-workflows/py-setup-project@main
+      - uses: zerapix/reusable-workflows/py-publish-fury@main
+        with:
+          GEMFURY_PUBLISH_TOKEN: ${{ secrets.GEMFURY_PUBLISH_TOKEN }}

@@ -41,12 +41,6 @@ jobs:
           --health-retries 5
         ports:
         - 5432:5432
-  create-release-output:
-    needs: create-release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump out needs.create-release.outputs.created-release
-        run: echo '${{ toJSON(needs.create-release.outputs.created-release) }}'
 
   # Create Separate Job, to distinguish release-creation from deployment
   # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)

@@ -1,0 +1,13 @@
+name: Deploy To Environment
+on:
+  workflow_dispatch:
+  workflow_call:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency: deploy-${{ inputs.environment }}
+    steps:
+      - uses: zerapix/reusable-workflows/py-run-tests@main
+      - uses: zerapix/reusable-workflows/py-publish-fury@main
+        with:
+          GEMFURY_PUBLISH_TOKEN: ${{ secrets.GEMFURY_PUBLISH_TOKEN }}

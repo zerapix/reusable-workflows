@@ -1,0 +1,10 @@
+# This workflow is used to run unit tests on something that needs an RDS database running.
+on:
+  workflow_call:
+name: test-w-db
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup and Test Project
+        uses: zerapix/reusable-workflows/py-run-tests@main

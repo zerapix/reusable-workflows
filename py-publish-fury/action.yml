@@ -1,0 +1,15 @@
+name: Deploy Python via Serverless
+description: Reusable action to deploy Python via the Serverless Framework.
+inputs:
+  GEMFURY_PUBLISH_TOKEN:
+    description: Gemfury Publish Token
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Build Library
+      run: poetry build
+    - name: Publish to Gemfury
+      run: |
+        poetry config http-basic.fury ${{inputs.GEMFURY_PUBLISH_TOKEN}} NOPASS
+        poetry publish -r fury
