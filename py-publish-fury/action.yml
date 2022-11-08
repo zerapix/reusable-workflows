@@ -12,6 +12,6 @@ runs:
       run: poetry build
     - name: Publish to Gemfury
       shell: bash
-      run: |poetry config http-basic.fury
-         ${{inputs.GEMFURY_PUBLISH_TOKEN}} NOPASS
+      run: |
+        poetry config http-basic.fury ${{inputs.GEMFURY_PUBLISH_TOKEN}} NOPASS
         poetry publish -r fury
