@@ -1,0 +1,14 @@
+# Use this if you just want to have unit-tests + release-please ran to create (pre-)releases.
+# does not do anything else; ie: no db, serverless, publishing, etc.
+name: Create (Pre-)Release
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+jobs:
+  reusable:
+    # Depending on if the merge to main was a release merge, or a normal branch merge...
+    # it will either create a PR with a release candidate or create a github release object.
+    uses: zerapix/reusable-workflows/.github/workflows/py-create-release.yml@main
+    secrets: inherit

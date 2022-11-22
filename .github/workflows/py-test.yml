@@ -1,4 +1,4 @@
-# This workflow is used to run unit tests on something that needs an RDS database running.
+# This workflow is used to run unit tests without a DB.
 on:
   workflow_call:
 name: test-w-db
