@@ -1,4 +1,5 @@
-# Normally called when a merge to the main branch happens.
+# Creates a release; if you want to use this in other projects a better start is probably
+# one of the py-merge-to-main-* workflows (which in turn can use this reusable workflow).
 on:
   workflow_call:
     outputs:

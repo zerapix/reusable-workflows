@@ -1,3 +1,5 @@
+# Normally called when a merge to the main branch happens.
+#
 # Use this if you just want to have unit-tests + release-please ran to create (pre-)releases.
 # does not do anything else; ie: no db, serverless, publishing, etc.
 name: Create (Pre-)Release (reusable)
