@@ -2,6 +2,12 @@
 # one of the py-merge-to-main-* workflows (which in turn can use this reusable workflow).
 on:
   workflow_call:
+    inputs:
+      RUN_TESTS:
+        required: false
+        type: string
+        description: Python package we are versioning/deploying; only skips if string is set to 'false' (using string, as composite actions only use strings)
+        default: 'true'
     outputs:
       created-release:
         description: "If final/tagged release was created or not."
@@ -16,6 +22,7 @@ jobs:
       - uses: zerapix/reusable-workflows/py-run-tests@main
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+          RUN_TESTS: ${{ inputs.RUN_TESTS }}
       - name: Install tomlkit
         # Ensure tomlkit is installed so I can retrieve package info on next step.
         # In Python 3.11, there is now a built-in `tomllib` library we can use.
