@@ -5,9 +5,9 @@ on:
       created-release:
         description: "If final/tagged release was created or not."
         value: ${{ jobs.create-release.outputs.created-release }}
-name: create-release
+name: Create (Pre-)Release
 jobs:
-  create-release:
+  create-pre-or-release:
     runs-on: ubuntu-latest
     outputs:
       created-release: ${{ steps.release.outputs.release_created }}
