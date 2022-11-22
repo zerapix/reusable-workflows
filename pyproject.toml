@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "reusable-workflows"
+version = "0.1.0"
+description = ""
+authors = ["Josh Orr <josh@orr.blue>"]
+readme = "README.md"
+packages = [{include = "reusable_workflows"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--verbose"
+
+testpaths = ["tests"]
+python_files = "tests.py test_*.py *_tests.py tests/*"
+norecursedirs = "lib/* tests/scripts .serverless .eggs dist/* node_modules"
