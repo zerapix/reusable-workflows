@@ -51,3 +51,4 @@ runs:
         # todo: For now use AWS credentials directly
         AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        APP_ENV: ${{ inputs.environment }}
