@@ -29,6 +29,9 @@ runs:
     #----------------------------------------------
     #         Install dependencies + self
     #----------------------------------------------
+    - name: Inform Poetry of Python Version To Use
+      shell: bash
+      run: poetry env use ${{ env.PY_VERSION }}
     - name: Install Dependencies
       shell: bash
       run: poetry config http-basic.fury ${{inputs.GEMFURY_DEPLOY_TOKEN}} NOPASS

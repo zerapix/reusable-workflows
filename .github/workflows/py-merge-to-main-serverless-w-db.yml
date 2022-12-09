@@ -37,9 +37,9 @@ jobs:
         run: poetry run pip install tomlkit
       - name: Retrieve Project Package via tomlkit
         run: |
-          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
+          PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
           echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
-      
+
       # release-please, increments version and tags releases.
       - uses: google-github-actions/release-please-action@v3
         id: release
