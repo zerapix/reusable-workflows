@@ -2,10 +2,11 @@
 on:
   workflow_call:
     inputs:
-     package-name:
-        required: true
+     auto-release-environment:
+        required: false
         type: string
-        description: Python package we are versioning/deploying.
+        default: dev
+        description: Defaults to dev; this is the environment to auto-release into when release is created..
 name: merge-to-main-release-please
 jobs:
   create-release:
@@ -23,12 +24,24 @@ jobs:
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
 
+      # TODO: Next two steps are the same as in `py-create-release.yml`,
+      # TODO: should put it in action to reuse code/steps.
+      - name: Install tomlkit
+        # Ensure tomlkit is installed so I can retrieve package info on next step.
+        # In Python 3.11, there is now a built-in `tomllib` library we can use.
+        # Once everything is on Python 3.11, we can change this code to use `tomllib` instead.
+        run: poetry run pip install tomlkit
+      - name: Retrieve Project Package via tomlkit
+        run: |
+          PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
+          echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
+      
       # release-please, increments version and tags releases.
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
           release-type: python
-          package-name: ${{ inputs.package-name }}
+          package-name: ${{ env.PY_PKG }}
     services:
       postgres:
         image: postgres:13
@@ -49,7 +62,7 @@ jobs:
   deploy-release:
     needs: create-release
     runs-on: ubuntu-latest
-    environment: dev
+    environment: ${{ inputs.auto-release-environment }}
     concurrency: deploy-dev
     if: ${{ needs.create-release.outputs.created-release }}
     steps:
