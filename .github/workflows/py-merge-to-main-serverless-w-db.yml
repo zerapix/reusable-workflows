@@ -2,11 +2,15 @@
 on:
   workflow_call:
     inputs:
-     auto-release-environment:
+      auto-release-environment:
         required: false
         type: string
         default: dev
         description: Defaults to dev; this is the environment to auto-release into when release is created..
+      package-name:
+        required: false
+        type: string
+        description: here for backwards compatibility; this is ignored and now it's auto-discovered.
 name: merge-to-main-release-please
 jobs:
   create-release:
@@ -35,7 +39,7 @@ jobs:
         run: |
           PY_OUTPUT=$(poetry run python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
           echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
-      
+      `
       # release-please, increments version and tags releases.
       - uses: google-github-actions/release-please-action@v3
         id: release
