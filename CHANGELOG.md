@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.0](https://github.com/zerapix/reusable-workflows/compare/v0.1.0...v1.0.0) (2022-12-16)
+
+
+### Features
+
+* add APP_ENV env-var during serverless deployment. ([307e5f9](https://github.com/zerapix/reusable-workflows/commit/307e5f937ade7e3d0670e1a96d802899fada3b73))
+* allow backwards compatibility. ([ae1a5dc](https://github.com/zerapix/reusable-workflows/commit/ae1a5dc620f1a2a98280fd60711e8072c4bb947e))
+* attempt to control if unit-tests should run. ([815acaa](https://github.com/zerapix/reusable-workflows/commit/815acaa731e3d8395be5629f2ada467682be2492))
+* use auto-discoverable package-name; ability to change default stage/env to auto-deploy to. ([8c66ebd](https://github.com/zerapix/reusable-workflows/commit/8c66ebd3e4c135881c3ba78c2db11a432a723b4b))
+
+
+### Bug Fixes
+
+* pass auto-deploy environment name variable into serverless deploy action ([fb773fb](https://github.com/zerapix/reusable-workflows/commit/fb773fba28d35c42467e7757adb7c0797c269ff4))
+* syntax error. ([73f4cfe](https://github.com/zerapix/reusable-workflows/commit/73f4cfec511289142d3645d6cde15969399e248c))
+* various fixes for poetry when grabbing info via tomlkit. ([53a3da8](https://github.com/zerapix/reusable-workflows/commit/53a3da8fb8d04487de90e4eb00c51b3de63a87f1))
+
+
+### Miscellaneous Chores
+
+* 1.0.0 release ([70e2e96](https://github.com/zerapix/reusable-workflows/commit/70e2e96af42b5b86274789c1c27055b24ddd90a7))
+
 ## 0.1.0 (2022-11-22)
 
 
