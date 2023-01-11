@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/zerapix/reusable-workflows/compare/v1.0.0...v1.1.0) (2023-01-11)
+
+
+### Features
+
+* always use `--force`; in future refactor to make it an option (changeable via run-workflow option). ([0ebb357](https://github.com/zerapix/reusable-workflows/commit/0ebb357557e08e12e123cfedc2bc7cd4e21f359f))
+
 ## [1.0.0](https://github.com/zerapix/reusable-workflows/compare/v0.1.0...v1.0.0) (2022-12-16)
 
 
