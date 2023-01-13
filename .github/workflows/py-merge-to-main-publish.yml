@@ -11,7 +11,12 @@ jobs:
       - uses: zerapix/reusable-workflows/py-run-tests@main
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-      - name: Retrieve Project Package
+      - name: Install tomlkit
+        # Ensure tomlkit is installed so I can retrieve package info on next step.
+        # In Python 3.11, there is now a built-in `tomllib` library we can use.
+        # Once everything is on Python 3.11, we can change this code to use `tomllib` instead.
+        run: poetry run pip install tomlkit
+      - name: Retrieve Project Package via tomlkit
         run: |
           PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
           echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
