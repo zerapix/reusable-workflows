@@ -7,6 +7,11 @@ on:
         type: string
         default: dev
         description: Defaults to dev; this is the environment to auto-release into when release is created..
+      release-branch:
+        required: false
+        type: string
+        default: ''
+        description: Branch to open pull release PR against (defaults to repo default branch if not specified).
       package-name:
         required: false
         type: string
@@ -46,6 +51,7 @@ jobs:
         with:
           release-type: python
           package-name: ${{ env.PY_PKG }}
+          default-branch: ${{ inputs.release-branch }}
     services:
       postgres:
         image: postgres:13
