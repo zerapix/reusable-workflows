@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/zerapix/reusable-workflows/compare/v1.1.0...v1.2.0) (2023-01-19)
+
+
+### Features
+
+* add support for publishing and not requiring tomlkit in package-deps. ([367d10d](https://github.com/zerapix/reusable-workflows/commit/367d10d5ec21ada3061556d7ed170fc7d9b11c51))
+* allow to specify non-default branch to release on. ([a335435](https://github.com/zerapix/reusable-workflows/commit/a335435a62038b8eb272535962da907c9546f95e))
+
 ## [1.1.0](https://github.com/zerapix/reusable-workflows/compare/v1.0.0...v1.1.0) (2023-01-11)
 
 
