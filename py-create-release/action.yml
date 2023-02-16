@@ -1,0 +1,37 @@
+name: Create Release
+description: Reusable action to create Python releases.
+inputs:
+  GEMFURY_DEPLOY_TOKEN:
+    description: Gemfury Deploy Token
+    required: true
+  release-branch:
+    required: false
+    default: ''
+    description: Branch to open pull release PR against (defaults to repo default branch if not specified).
+outputs:
+  created-release:
+    description: true if a versioned release was created (false if only made release candidate PR)
+    value: ${{ steps.release.outputs.release_created }}
+runs:
+  using: composite
+  steps:
+    - uses: zerapix/reusable-workflows/py-run-tests@main
+      with:
+        GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
+    - name: Install tomlkit
+      # Ensure tomlkit is installed, so I can retrieve package info on next step.
+      # In Python 3.11, there is now a built-in `tomllib` library we can use.
+      # Once everything is on Python 3.11, we can change this code to use `tomllib` instead.
+      shell: bash
+      run: poetry run pip install tomlkit
+    - name: Retrieve Project Package via tomlkit
+      shell: bash
+      run: |
+        PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
+        echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
+    - uses: google-github-actions/release-please-action@v3
+      id: release
+      with:
+        release-type: python
+        package-name: ${{ env.PY_PKG }}
+        default-branch: ${{ inputs.release-branch }}
