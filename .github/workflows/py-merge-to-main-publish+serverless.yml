@@ -23,7 +23,7 @@ jobs:
       - uses: zerapix/reusable-workflows/py-create-release@main
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-          release-branch: ${{ inputs.auto-release-environment }}
+          release-branch: ${{ inputs.release-branch }}
 
   # Create Separate Job, to distinguish release-creation from publishing
   # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
