@@ -21,6 +21,7 @@ jobs:
       created-release: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: zerapix/reusable-workflows/py-create-release@main
+        id: release
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
           release-branch: ${{ inputs.release-branch }}
