@@ -15,7 +15,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: zerapix/reusable-workflows/py-run-tests@main
+    - uses: zerapix/reusable-workflows/py-run-tests@test
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
     - name: Install tomlkit

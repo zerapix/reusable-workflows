@@ -4,6 +4,7 @@ inputs:
   environment:
     description: Environmental name to deploy in.
     required: true
+
   override-stage-name:
     description: Environmental name to deploy in.
     required: false
@@ -12,6 +13,7 @@ inputs:
   AWS_ACCESS_KEY_ID:
     description: AWS Key ID to use while deploying.
     required: true
+
   AWS_SECRET_ACCESS_KEY:
     description:  AWS Key Secret to use while deploying.
     required: true
