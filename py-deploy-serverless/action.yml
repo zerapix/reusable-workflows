@@ -45,18 +45,18 @@ runs:
         APP_ENV: ${{ inputs.environment }}
         AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
-    - name: Set name output
+    - name: Set stage to use output
       shell: bash
-      id: name
+      id: stage
       run: |
         USER_INPUT1=${{ inputs.override-stage-name }}
         USER_INPUT2=${{ inputs.environment }}
-        echo "::set-output name=value::${USER_INPUT1:-${USER_INPUT2}}"
+        echo "value=${USER_INPUT1:-${USER_INPUT2}}" >> $GITHUB_OUTPUT
     - name: Serverless Deploy to dev
       # Hard-coding the environment for now, when we start dealing with other environments
       # look into environment feature of github actions/workflows.
       run: |
-        yarn sls deploy --verbose --stage ${{ inputs.override-stage-name }} --force
+        yarn sls deploy --verbose --stage ${{ steps.stage.value }} --force
         yarn sls doctor
       shell: bash
       env:
