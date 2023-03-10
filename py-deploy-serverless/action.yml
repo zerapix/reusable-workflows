@@ -56,7 +56,7 @@ runs:
       # Hard-coding the environment for now, when we start dealing with other environments
       # look into environment feature of github actions/workflows.
       run: |
-        yarn sls deploy --verbose --stage ${{ steps.stage.value }} --force
+        yarn sls deploy --verbose --stage ${{ steps.stage.outputs.value }} --force
         yarn sls doctor
       shell: bash
       env:
