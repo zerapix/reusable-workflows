@@ -8,7 +8,7 @@ inputs:
   override-stage-name:
     description: Environmental name to deploy in.
     required: false
-    default: ${{ inputs.environment }}
+    default: ''
 
   AWS_ACCESS_KEY_ID:
     description: AWS Key ID to use while deploying.
@@ -45,6 +45,13 @@ runs:
         APP_ENV: ${{ inputs.environment }}
         AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+    - name: Set name output
+      shell: bash
+      id: name
+      run: |
+        USER_INPUT1=${{ inputs.override-stage-name }}
+        USER_INPUT2=${{ inputs.environment }}
+        echo "::set-output name=value::${USER_INPUT1:-${USER_INPUT2}}"
     - name: Serverless Deploy to dev
       # Hard-coding the environment for now, when we start dealing with other environments
       # look into environment feature of github actions/workflows.
