@@ -26,7 +26,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     outputs:
-      created-release: ${{ steps.release.outputs.release_created }}
+      created-release: ${{ steps.release.outputs.created-release }}
     env:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pg-pass
@@ -34,30 +34,11 @@ jobs:
       POSTGRES_PORT: 5432
       POSTGRES_HOST: localhost
     steps:
-      - uses: zerapix/reusable-workflows/py-run-tests@main
-        with:
-          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-
-      # TODO: Next two steps are the same as in `py-create-release.yml`,
-      # TODO: should put it in action to reuse code/steps.
-      # TODO: Currently working in this ^ todo...
-      - name: Install tomlkit
-        # Ensure tomlkit is installed, so I can retrieve package info on next step.
-        # In Python 3.11, there is now a built-in `tomllib` library we can use.
-        # Once everything is on Python 3.11, we can change this code to use `tomllib` instead.
-        run: poetry run pip install tomlkit
-      - name: Retrieve Project Package via tomlkit
-        run: |
-          PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
-          echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
-
-      # release-please, increments version and tags releases.
-      - uses: google-github-actions/release-please-action@v3
+      - uses: zerapix/reusable-workflows/py-create-release@main
         id: release
         with:
-          release-type: python
-          package-name: ${{ env.PY_PKG }}
-          default-branch: ${{ inputs.release-branch }}
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+          release-branch: ${{ inputs.release-branch }}
     services:
       postgres:
         image: postgres:13
