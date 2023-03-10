@@ -18,7 +18,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     outputs:
-      created-release: ${{ steps.release.outputs.release_created }}
+      created-release: ${{ steps.release.outputs.created-release }}
     steps:
       - uses: zerapix/reusable-workflows/py-create-release@main
         id: release
