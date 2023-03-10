@@ -7,6 +7,13 @@ on:
         type: string
         default: dev
         description: Defaults to dev; this is the environment to auto-release into when release is created..
+
+      override-stage-name:
+        required: false
+        type: string
+        default: ''
+        description: Defaults to the auto-release-environment name; use this if the stage is different; like if its an account-wide "all" stage.
+
       release-branch:
         required: false
         type: string
@@ -18,7 +25,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     outputs:
-      created-release: ${{ steps.release.outputs.release_created }}
+      created-release: ${{ steps.release.outputs.created-release }}
     steps:
       - uses: zerapix/reusable-workflows/py-create-release@main
         id: release
@@ -56,5 +63,6 @@ jobs:
       - uses: zerapix/reusable-workflows/py-deploy-serverless@main
         with:
           environment: ${{ inputs.auto-release-environment }}
+          override-stage-name: ${{ inputs.override-stage-name }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

@@ -4,9 +4,16 @@ inputs:
   environment:
     description: Environmental name to deploy in.
     required: true
+
+  override-stage-name:
+    description: Environmental name to deploy in.
+    required: false
+    default: ''
+
   AWS_ACCESS_KEY_ID:
     description: AWS Key ID to use while deploying.
     required: true
+
   AWS_SECRET_ACCESS_KEY:
     description:  AWS Key Secret to use while deploying.
     required: true
@@ -38,11 +45,18 @@ runs:
         APP_ENV: ${{ inputs.environment }}
         AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+    - name: Set stage to use output
+      shell: bash
+      id: stage
+      run: |
+        USER_INPUT1=${{ inputs.override-stage-name }}
+        USER_INPUT2=${{ inputs.environment }}
+        echo "value=${USER_INPUT1:-${USER_INPUT2}}" >> $GITHUB_OUTPUT
     - name: Serverless Deploy to dev
       # Hard-coding the environment for now, when we start dealing with other environments
       # look into environment feature of github actions/workflows.
       run: |
-        yarn sls deploy --verbose --stage ${{ inputs.environment }} --force
+        yarn sls deploy --verbose --stage ${{ steps.stage.outputs.value }} --force
         yarn sls doctor
       shell: bash
       env:

@@ -30,32 +30,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       created-release: ${{ steps.release.outputs.created-release }}
-    env:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: pg-pass
-      POSTGRES_DB: unitTestingDB-unit
-      POSTGRES_PORT: 5432
-      POSTGRES_HOST: localhost
     steps:
       - uses: zerapix/reusable-workflows/py-create-release@main
         id: release
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
           release-branch: ${{ inputs.release-branch }}
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: pg-pass
-          POSTGRES_DB: pixyDocsApi-unknown
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-        - 5432:5432
 
   # Create Separate Job, to distinguish release-creation from deployment
   # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
