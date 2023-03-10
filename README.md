@@ -25,7 +25,7 @@ on:
         default: dev
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-deployment-w-serverless-db.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-deployment-w-serverless-db.yml@main
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
@@ -44,7 +44,7 @@ jobs:
   reusable:
     # Depending on if the merge to main was a release merge, or a normal branch merge...
     # it will either create a PR with a release candidate or create a github release object.
-    uses: zerapix/reusable-workflows/.github/workflows/py-merge-to-main-serverless-w-db.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-merge-to-main-serverless-w-db.yml@main
     with:
       package-name: pixydocs_api
     secrets: inherit
@@ -57,7 +57,7 @@ name: Run Tests
 on: pull_request
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@main
     secrets: inherit
 
 

@@ -36,10 +36,10 @@ jobs:
       POSTGRES_PORT: 5432
       POSTGRES_HOST: localhost
     steps:
-      - uses: zerapix/reusable-workflows/py-run-tests@test
+      - uses: zerapix/reusable-workflows/py-run-tests@main
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-      - uses: zerapix/reusable-workflows/py-deploy-serverless@test
+      - uses: zerapix/reusable-workflows/py-deploy-serverless@main
         with:
           environment: ${{ inputs.environment }}
           override-stage-name: ${{ inputs.override-stage-name }}
