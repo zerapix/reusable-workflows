@@ -1,11 +1,6 @@
 # Normally called when a merge to the main branch happens.
 on:
   workflow_call:
-    inputs:
-      project-type:
-        required: true
-        type: string
-        description: Project type, 'js' or 'py'
 name: merge-to-main-release-please
 jobs:
   create-release:
@@ -17,7 +12,13 @@ jobs:
       - uses: zerapix/reusable-workflows/js-setup-project@test
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-      - run: echo TYPE IS ${{ inputs.project-type }}
+          fetch-depth: '0'
+      - name: Increment, Tag and Commit for Release
+        run: |
+          git config user.name "$(git log -n 1 --pretty=format:%an) (action)"
+          git config user.email "$(git log -n 1 --pretty=format:%ae)"
+          yarn commit-and-tag-version
+          git push --follow-tags origin main
 
 #  # Create Separate Job, to distinguish release-creation from deployment
 #  # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
