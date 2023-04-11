@@ -14,18 +14,18 @@ jobs:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
           fetch-depth: '0'
       - run: echo Running On Ref ${{ github.ref }}
-      - name: Increment, Tag and Commit for Release
-        run: |
-          git config user.name "$(git log -n 1 --pretty=format:%an) (action)"
-          git config user.email "$(git log -n 1 --pretty=format:%ae)"
-          yarn commit-and-tag-version
-          git push --follow-tags origin main
+#      - name: Increment, Tag and Commit for Release
+#        run: |
+#          git config user.name "$(git log -n 1 --pretty=format:%an) (action)"
+#          git config user.email "$(git log -n 1 --pretty=format:%ae)"
+#          yarn commit-and-tag-version
+#          git push --follow-tags origin main
       - name: Get Tag Name
         id: tag-out
         run: |
-          USER_INPUT1=${{ inputs.override-stage-name }}
-          USER_INPUT2=${{ inputs.environment }}
-          echo "value=$(git describe --tags --abbrev=0 | tr -d " \n\t\r")" >> $GITHUB_OUTPUT
+          tag_name=$( (git describe --tags --abbrev=0 | tr -d " \n\t\r") )
+          echo "Tag Name: $tag_name"
+          echo "value=$tag_name" >> $GITHUB_OUTPUT
       - run: git describe --tags --abbrev=0 | tr -d " \n\t\r"
       - run: echo Git Seeing Tag ${{ steps.stage.outputs.value }}
 #      - name: Create Release
