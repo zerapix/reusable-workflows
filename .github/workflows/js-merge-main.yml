@@ -27,7 +27,7 @@ jobs:
           echo "Tag Name: $tag_name"
           echo "value=$tag_name" >> $GITHUB_OUTPUT
       - run: git describe --tags --abbrev=0 | tr -d " \n\t\r"
-      - run: echo Git Seeing Tag ${{ steps.stage.outputs.value }}
+      - run: echo Git Seeing Tag ${{ steps.tag-out.outputs.value }}
 #      - name: Create Release
 #        uses: softprops/action-gh-release@v1
 #        with:
