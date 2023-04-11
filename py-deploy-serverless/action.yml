@@ -52,8 +52,11 @@ runs:
         USER_INPUT1=${{ inputs.override-stage-name }}
         USER_INPUT2=${{ inputs.environment }}
         echo "value=${USER_INPUT1:-${USER_INPUT2}}" >> $GITHUB_OUTPUT
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
+
+#      # Can use this to get an SSH endpoint you can connect to and debug via a terminal session.
+#    - name: Setup tmate session
+#      uses: mxschmitt/action-tmate@v3
+
     - name: Serverless Deploy to dev
       # Hard-coding the environment for now, when we start dealing with other environments
       # look into environment feature of github actions/workflows.

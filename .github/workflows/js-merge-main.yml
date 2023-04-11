@@ -1,0 +1,34 @@
+# Normally called when a merge to the main branch happens.
+on:
+  workflow_call:
+    inputs:
+      project-type:
+        required: true
+        type: string
+        description: Project type, 'js' or 'py'
+name: merge-to-main-release-please
+jobs:
+  create-release:
+    concurrency: create-release
+    runs-on: ubuntu-latest
+    # If are already on a 'release' commit, we should skip this job.
+    if: "!startsWith(github.event.head_commit.message, 'chore(release): ')"
+    steps:
+      - uses: zerapix/reusable-workflows/${{ inputs.project-type }}-setup-project@test
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+
+#  # Create Separate Job, to distinguish release-creation from deployment
+#  # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
+#  deploy-release:
+#    needs: create-release
+#    runs-on: ubuntu-latest
+#    environment: ${{ inputs.auto-release-environment }}
+#    concurrency: deploy-dev
+#    steps:
+#      - uses: zerapix/reusable-workflows/py-setup-project@test
+#      - uses: zerapix/reusable-workflows/py-deploy-serverless@test
+#        with:
+#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
