@@ -58,7 +58,7 @@ jobs:
   deploy-release:
     needs: create-release
     runs-on: ubuntu-latest
-    environment: test
+#    environment: test
     concurrency: deploy-dev
 #    env:
 #      GITHUB_REF: refs/tags/${{ needs.create-release.outputs.release-tag }}
@@ -79,7 +79,7 @@ jobs:
               workflow_id: 'deployment.yml',
               ref: 'refs/tags/${{ needs.create-release.outputs.release-tag }}',
               inputs: {
-                environment: test
+                environment: 'test'
               }
             })
 #      - uses: zerapix/reusable-workflows/py-setup-project@test
