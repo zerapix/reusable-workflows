@@ -60,15 +60,25 @@ jobs:
     runs-on: ubuntu-latest
     environment: test
     concurrency: deploy-dev
-    env:
-      GITHUB_REF: refs/tags/${{ needs.create-release.outputs.release-tag }}
+#    env:
+#      GITHUB_REF: refs/tags/${{ needs.create-release.outputs.release-tag }}
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-        with:
-          ref: refs/tags/${{ needs.create-release.outputs.release-tag }}
+#      - name: Checkout Repo
+#        uses: actions/checkout@v3
+#        with:
+#          ref: refs/tags/${{ needs.create-release.outputs.release-tag }}
       - name: Release Thunk
         run: echo "Deployed Tag ${{ needs.create-release.outputs.release-tag }}"
+      - name: Trigger Workflow
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deployment.yml',
+              ref: 'refs/tags/${{ needs.create-release.outputs.release-tag }}',
+            })
 #      - uses: zerapix/reusable-workflows/py-setup-project@test
 #      - uses: zerapix/reusable-workflows/py-deploy-serverless@test
 #        with:
