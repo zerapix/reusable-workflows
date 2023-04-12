@@ -28,6 +28,6 @@ runs:
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       run: yarn install --frozen-lockfile
       shell: bash
-    - name: Debug Echo
-      run: echo "Got To End!"
+    - name: Finished Echo
+      run: echo "Finished installing deps..."
       shell: bash

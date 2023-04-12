@@ -83,7 +83,7 @@ jobs:
               }
             })
 #      - uses: zerapix/reusable-workflows/py-setup-project@test
-#      - uses: zerapix/reusable-workflows/py-deploy-serverless@test
+#      - uses: zerapix/reusable-workflows/all-deploy-sls@test
 #        with:
 #          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
 #          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
