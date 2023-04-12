@@ -60,6 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: test
     concurrency: deploy-dev
+    env:
+      GITHUB_REF: refs/tags/${{ needs.create-release.outputs.release-tag }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
