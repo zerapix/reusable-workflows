@@ -50,7 +50,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Released As: ${{ steps.tag-out.outputs.value }}, ${{ steps.create-release.outputs.url }}
+            :robot: Released As ${{ steps.tag-out.outputs.value }}, ${{ steps.create-release.outputs.url }}
 #  # Create Separate Job, to distinguish release-creation from deployment
 #  # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
 #  deploy-release:
