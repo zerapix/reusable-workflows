@@ -1,0 +1,42 @@
+name: Deploy To Environment
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy in.
+        type: environment
+        default: dev
+
+      override-stage-name:
+        required: false
+        type: string
+        default: ''
+        description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        default: dev
+        description: Environment to deploy in.
+
+      override-stage-name:
+        required: false
+        type: string
+        default: ''
+        description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
+jobs:
+  deploy:
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    concurrency: deploy-${{ inputs.environment }}
+    steps:
+      - run: echo "We Deployed For En ${{ inputs.environment }}"
+#      - uses: zerapix/reusable-workflows/py-run-tests@test
+#        with:
+#          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+#      - uses: zerapix/reusable-workflows/py-deploy-serverless@test
+#        with:
+#          environment: ${{ inputs.environment }}
+#          override-stage-name: ${{ inputs.override-stage-name }}
+#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
