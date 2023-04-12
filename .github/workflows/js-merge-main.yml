@@ -43,6 +43,8 @@ jobs:
           name: ${{ steps.tag-out.outputs.value }}
           generate_release_notes: false
           body: ${{ steps.change-log.outputs.value }}
+      - name: Debug Event Info
+        run: echo event_name ${{ github.event_name }} action ${{ github.event.action }} merged ${{ github.event.pull_request.merged }}
       - name: Link From PR to Release
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
         uses: thollander/actions-comment-pull-request@v2
