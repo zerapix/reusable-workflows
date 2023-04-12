@@ -31,7 +31,7 @@ jobs:
     outputs:
       created-release: ${{ steps.release.outputs.created-release }}
     steps:
-      - uses: zerapix/reusable-workflows/py-create-release@main
+      - uses: zerapix/reusable-workflows/py-create-release@test
         id: release
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
@@ -46,10 +46,10 @@ jobs:
     concurrency: deploy-dev
     if: ${{ needs.create-release.outputs.created-release }}
     steps:
-      - uses: zerapix/reusable-workflows/py-setup-project@main
+      - uses: zerapix/reusable-workflows/py-setup-project@test
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-      - uses: zerapix/reusable-workflows/py-deploy-serverless@main
+      - uses: zerapix/reusable-workflows/py-deploy-serverless@test
         with:
           environment: ${{ inputs.auto-release-environment }}
           override-stage-name: ${{ inputs.override-stage-name }}
