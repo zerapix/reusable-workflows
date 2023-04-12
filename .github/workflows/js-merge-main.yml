@@ -32,9 +32,9 @@ jobs:
           change_log="$(git diff --unified=0 --color-words --no-prefix HEAD~1 HEAD -- CHANGELOG.md  | perl -wlne 'print $1 if /^\e\[32m(.*)\e\[m$/')"
           echo "Using Change Log: $change_log"
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "value<<$EOF" >> $GITHUB_ENV
-          echo "$change_log" >> $GITHUB_ENV
-          echo "$EOF" >> $GITHUB_ENV
+          echo "value<<$EOF" >> $GITHUB_OUTPUT
+          echo "$change_log" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
       - name: Create Release
         uses: softprops/action-gh-release@v1
         id: create-release
