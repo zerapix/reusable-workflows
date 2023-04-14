@@ -27,7 +27,7 @@ runs:
       with:
         repository: my-org/my-tools
         path: .reusable-workflows
-        ref: ${{ workflow-ref }}
+        ref: ${{ inputs.workflow-ref }}
     - name: Setup Node.js
       id: setup_node
       uses: actions/setup-node@v3
