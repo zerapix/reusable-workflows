@@ -17,6 +17,6 @@ jobs:
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
           fetch-depth: '0'
-##      # Can use this to get an SSH endpoint you can connect to and debug via a terminal session.
-#      - name: Setup tmate session
-#        uses: mxschmitt/action-tmate@v3
+#      # Can use this to get an SSH endpoint you can connect to and debug via a terminal session.
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
