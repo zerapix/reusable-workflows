@@ -8,17 +8,26 @@ inputs:
     # Defaults to only current, use "0" to fetch all history for use by version bumper.
     description: Git Fetch Depth
     default: '1'
+  workflow-ref:
+    default: main
+    description: Reusable workflow branch/tag/etc I am being called in.
 runs:
   using: "composite"
   steps:
     #----------------------------------------------
     #       Check-out repo, set-up python + poetry
     #----------------------------------------------
-    - name: Checkout Repo
+    - name: Checkout Project Repo
       uses: actions/checkout@v3
       with:
         # fetch-depth 0 will check out all the commits and tags needed for release-bumper
         fetch-depth: ${{ inputs.fetch-depth }}
+    - name: Checkout Reusable Repo
+      uses: actions/checkout@v3
+      with:
+        repository: my-org/my-tools
+        path: .reusable-workflows
+        ref: ${{ workflow-ref }}
     - name: Setup Node.js
       id: setup_node
       uses: actions/setup-node@v3
