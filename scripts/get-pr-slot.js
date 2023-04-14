@@ -1,5 +1,6 @@
-module.exports = ({github, context}) => {
-    let devAppHost = "pixydocs.dev.zerapix.com"
+module.exports = ({github, context, devAppHost}) => {
+    // let devAppHost = "pixydocs.dev.zerapix.com"
+
   // return context.payload.client_payload.value
   //   github.rest.issues.addLabels({
   //     issue_number: context.issue.number,

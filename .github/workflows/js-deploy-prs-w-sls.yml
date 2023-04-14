@@ -6,6 +6,11 @@ on:
         type: string
         default: main
         description: Reusable workflow branch/tag/etc I am being called in.
+
+      dev-app-host:
+        type: string
+        description: Host name to link to (will prepend 'prs*' to start of host).
+        required: true
 jobs:
   get-prs-slot:
     runs-on: ubuntu-latest
@@ -24,7 +29,8 @@ jobs:
         with:  # "pixydocs.dev.zerapix.com"
           script: |
             const script = require('./.reusable-workflows/scripts/get-pr-slot.js')
-            return script({github, context})
+            const devAppHost = '${{ inputs.dev-app-host }}'
+            return script({github, context, devAppHost})
       - run: echo "Assigned PR Slot (${{ steps.slot-num.outputs.result }})."
 
   deploy-prs:
