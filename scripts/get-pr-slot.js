@@ -65,7 +65,7 @@ module.exports = ({github, context}) => {
             if (prIsSelf && context.action != 'reopened') {
                 console.log(`Found currentPR labels (${currentPrLabels})...`)
                 if (currentPrLabels.length == 1) {
-                    console.log(`Found already assigned slot (${slotNum}), for PR issue id (${context.issue.number}).`)
+                    console.log(`Found already assigned slot (${lastSlotNum}), for PR issue id (${context.issue.number}).`)
                     // TODO: If there happens to be more then one label, remove others???
                     return lastSlotNum
                 }
