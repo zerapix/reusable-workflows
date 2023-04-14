@@ -1,6 +1,11 @@
 # Normally called when a merge to the main branch happens.
 on:
   workflow_call:
+    inputs:
+      workflow-ref:
+        type: string
+        default: main
+        description: Reusable workflow branch/tag/etc I am being called in.
 name: test-path
 jobs:
   create-release:
@@ -13,11 +18,17 @@ jobs:
           fetch-depth: '0'
       - run: echo "Running On Action Path $GITHUB_ACTION_PATH  --- pwd:"
       - run: echo "pwd-path - $(pwd)"
-      - run: printenv
-      - uses: zerapix/reusable-workflows/js-test-action@test
-        with:
-          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-          fetch-depth: '0'
+      - env:
+          JSON_DOC: ${{ toJSON(github.event) }}
+        name: test
+        run: |
+          echo Context Info:
+          printf '%s\n' "$JSON_DOC" > foo.json
+          cat foo.json
+#      - uses: zerapix/reusable-workflows/js-test-action@test
+#        with:
+#          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+#          fetch-depth: '0'
 ##      # Can use this to get an SSH endpoint you can connect to and debug via a terminal session.
 #      - name: Setup tmate session
 #        uses: mxschmitt/action-tmate@v3
