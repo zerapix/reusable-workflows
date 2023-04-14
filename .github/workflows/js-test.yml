@@ -1,0 +1,16 @@
+# Normally called when a merge to the main branch happens.
+on:
+  workflow_call:
+name: test-path
+jobs:
+  create-release:
+    concurrency: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: zerapix/reusable-workflows/js-setup-project@test
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+          fetch-depth: '0'
+      - run: echo "Running On Action Path $GITHUB_ACTION_PATH  --- pwd:"
+      - run: echo "pwd-path - $(pwd)"
+
