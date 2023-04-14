@@ -34,6 +34,7 @@ jobs:
       environment: 'prs'
       override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
       pre-release: true
+      reusable-ref: ${{ inputs.reusable-ref }}
 #
 #
 #      # Dispatch a deployment workflow for the PR.
