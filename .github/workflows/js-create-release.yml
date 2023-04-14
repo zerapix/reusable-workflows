@@ -1,4 +1,8 @@
-# Normally called when a merge to the main branch happens.
+# Normally called when a PR is closed
+# (this allows for a comment to be placed on PR about what version it got released as)
+#
+# BUT can also be called on a `push` event to the main branch.
+
 on:
   workflow_call:
     inputs:
@@ -6,6 +10,7 @@ on:
         type: string
         default: main
         description: Reusable workflow branch/tag/etc I am being called in.
+
 name: merge-to-main-release-please
 jobs:
   create-release:
@@ -55,6 +60,8 @@ jobs:
           body: ${{ steps.change-log.outputs.value }}
       - name: Debug Event Info
         run: echo event_name ${{ github.event_name }} action ${{ github.event.action }} merged ${{ github.event.pull_request.merged }}
+
+      # If we are a `pull_request` event, we can add a comment to it about the release.
       - name: Link From PR to Release
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
         uses: thollander/actions-comment-pull-request@v2

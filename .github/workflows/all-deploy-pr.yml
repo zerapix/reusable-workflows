@@ -1,0 +1,44 @@
+# Normally called on pull_request events
+on:
+  workflow_call:
+    inputs:
+      reusable-ref:
+        type: string
+        default: main
+        description: Reusable workflow branch/tag/etc I am being called in.
+jobs:
+  deploy-pr:
+    runs-on: ubuntu-latest
+    concurrency: get-pr-slot
+    steps:
+      - uses: zerapix/reusable-workflows/all-checkout@test
+        with:
+          reusable-ref: ${{ inputs.reusable-ref }}
+      - uses: ./.reusable-workflows/js-setup-project
+
+      # Get/Assign the prs* stage name for pr.
+      - uses: actions/github-script@v6
+        id: slot-num
+        with:  # "pixydocs.dev.zerapix.com"
+          script: |
+            const script = require('./.reusable-workflows/scripts/get-pr-slot.js')
+            return script({github, context})
+      - run: echo "Assigned PR Slot (${{ steps.slot-num.outputs.result }})."
+
+      # Dispatch a deployment workflow for the PR.
+      - name: Dispatch PR Deployment Workflow
+        uses: actions/github-script@v6
+        with:
+          # Run a new workflow job, using originating repo's standard `deployment.yml` via workflow_dispatch
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy-pr.yml',
+              ref: 'refs/tags/${{ needs.create-release.outputs.release-tag }}',
+              inputs: {
+                environment: 'prs'
+                override-stage-name: '${{ steps.slot-num.outputs.result }}'
+                pre-release: true
+              }
+            })
