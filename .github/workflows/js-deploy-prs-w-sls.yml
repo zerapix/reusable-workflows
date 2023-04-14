@@ -29,7 +29,7 @@ jobs:
 
   deploy-prs:
     needs: get-prs-slot
-    uses: zerapix/reusable-workflows/.github/workflows/js-deployment-w-sls.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/js-deploy-w-sls.yml@test
     with:
       environment: 'prs'
       override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
