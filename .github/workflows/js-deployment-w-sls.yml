@@ -1,17 +1,5 @@
 name: Deploy To Environment
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: Environment to deploy in.
-        type: environment
-        default: dev
-
-      override-stage-name:
-        required: false
-        type: string
-        default: ''
-        description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
   workflow_call:
     inputs:
       environment:
@@ -24,6 +12,11 @@ on:
         type: string
         default: ''
         description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
+
+      reusable-ref:
+        type: string
+        default: main
+        description: Reusable workflow branch/tag/etc I am being called in.
 jobs:
   deploy:
     environment: ${{ inputs.environment }}
@@ -31,11 +24,12 @@ jobs:
     concurrency: deploy-${{ inputs.environment }}
     steps:
       - run: echo "Deploying For Environment ${{ inputs.environment }}; Ref ${{ github.ref }}"
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+
+      - uses: zerapix/reusable-workflows/all-checkout@test
         with:
           # fetch-depth 0 will check out all the commits and tags needed for release-bumper
-          fetch-depth: ${{ inputs.fetch-depth }}
+          fetch-depth: 0
+          reusable-ref: ${{ inputs.reusable-ref }}
 
       #----------------------------------------------
       #       Only Check-out repo for now...

@@ -1,6 +1,11 @@
 # Normally called when a merge to the main branch happens.
 on:
   workflow_call:
+    inputs:
+      reusable-ref:
+        type: string
+        default: main
+        description: Reusable workflow branch/tag/etc I am being called in.
 name: merge-to-main-release-please
 jobs:
   create-release:
@@ -11,10 +16,13 @@ jobs:
     # If are already on a 'release' commit, we should skip this job.
     if: "!startsWith(github.event.head_commit.message, 'chore(release): ')"
     steps:
-      - uses: zerapix/reusable-workflows/js-setup-project@test
+      - uses: zerapix/reusable-workflows/all-checkout@test
         with:
-          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-          fetch-depth: '0'
+          # fetch-depth 0 will check out all the commits and tags needed for release-bumper
+          fetch-depth: 0
+          reusable-ref: ${{ inputs.reusable-ref }}
+      - uses: ./.reusable-workflows/js-setup-project
+
       - run: echo Running On Ref ${{ github.ref }}
       - name: Increment, Tag and Commit for Release
         run: |
@@ -53,25 +61,21 @@ jobs:
         with:
           message: |
             :robot: Released As ${{ steps.tag-out.outputs.value }}, ${{ steps.create-release.outputs.url }}
+  
+
   # Create Separate Job, to distinguish release-creation from deployment
   # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
   deploy-release:
     needs: create-release
     runs-on: ubuntu-latest
-#    environment: test
     concurrency: deploy-dev
-#    env:
-#      GITHUB_REF: refs/tags/${{ needs.create-release.outputs.release-tag }}
     steps:
-#      - name: Checkout Repo
-#        uses: actions/checkout@v3
-#        with:
-#          ref: refs/tags/${{ needs.create-release.outputs.release-tag }}
       - name: Release Thunk
         run: echo "Deployed Tag ${{ needs.create-release.outputs.release-tag }}"
       - name: Trigger Workflow
         uses: actions/github-script@v6
         with:
+          # Run a new workflow job, using originating repo's standard `deployment.yml` via workflow_dispatch
           script: |
             github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
@@ -82,9 +86,3 @@ jobs:
                 environment: 'test'
               }
             })
-#      - uses: zerapix/reusable-workflows/py-setup-project@test
-#      - uses: zerapix/reusable-workflows/all-deploy-sls@test
-#        with:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-

@@ -32,6 +32,7 @@ runs:
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       run: yarn install --frozen-lockfile
       shell: bash
+
     - name: Check For Pre-Serverless Hook Script
       id: check_pre_serverless_hook_file
       uses: andstor/file-existence-action@v2

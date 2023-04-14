@@ -2,7 +2,7 @@
 on:
   workflow_call:
     inputs:
-      workflow-ref:
+      reusable-ref:
         type: string
         default: main
         description: Reusable workflow branch/tag/etc I am being called in.
@@ -12,11 +12,13 @@ jobs:
     concurrency: create-release
     runs-on: ubuntu-latest
     steps:
-      - uses: zerapix/reusable-workflows/js-setup-project@test
+      - uses: zerapix/reusable-workflows/all-checkout@test
         with:
-          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-          fetch-depth: '0'
-          workflow-ref: ${{ inputs.workflow-ref }}
+          # fetch-depth 0 will check out all the commits and tags needed for release-bumper
+          fetch-depth: 0
+          reusable-ref: ${{ inputs.reusable-ref }}
+      - uses: ./.reusable-workflows/js-setup-project
+
       - run: echo "Running On Action Path $GITHUB_ACTION_PATH  --- pwd:"
       - run: echo "pwd-path - $(pwd)"
       - env:
