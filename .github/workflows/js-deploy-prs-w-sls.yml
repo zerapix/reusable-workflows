@@ -30,11 +30,13 @@ jobs:
   deploy-prs:
     needs: get-prs-slot
     uses: zerapix/reusable-workflows/.github/workflows/js-deploy-w-sls.yml@test
+    secrets: inherit
     with:
       environment: 'prs'
       override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
       pre-release: true
       reusable-ref: ${{ inputs.reusable-ref }}
+
 #
 #
 #      # Dispatch a deployment workflow for the PR.
