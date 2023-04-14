@@ -19,7 +19,7 @@ jobs:
       - run: echo "Running On Action Path $GITHUB_ACTION_PATH  --- pwd:"
       - run: echo "pwd-path - $(pwd)"
       - env:
-          JSON_DOC: ${{ toJSON(github.event) }}
+          JSON_DOC: ${{ toJSON(github.context) }}
         name: test
         run: |
           echo Context Info:
