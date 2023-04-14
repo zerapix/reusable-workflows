@@ -26,7 +26,7 @@ jobs:
           echo Context Info:
           printf '%s\n' "$JSON_DOC" > foo.json
           cat foo.json
-      - uses: .reusable-workflows/js-test-action
+      - uses: ./.reusable-workflows/js-test-action
 ##      # Can use this to get an SSH endpoint you can connect to and debug via a terminal session.
 #      - name: Setup tmate session
 #        uses: mxschmitt/action-tmate@v3
