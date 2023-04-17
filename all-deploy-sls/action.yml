@@ -53,6 +53,7 @@ runs:
         USER_INPUT1=${{ inputs.override-stage-name }}
         USER_INPUT2=${{ inputs.environment }}
         echo "value=${USER_INPUT1:-${USER_INPUT2}}" >> $GITHUB_OUTPUT
+
     # Can use this to get an SSH endpoint you can connect to and debug via a terminal session.
     - name: (debug + failure) Setup SSH Session
       uses: mxschmitt/action-tmate@v3
@@ -60,6 +61,14 @@ runs:
       with:
         timeout-minutes: 20
         limit-access-to-actor: true
+      env:
+        # todo: checkout what we can do with `SERVERLESS_ACCESS_KEY`:
+        #  SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+        # todo: For now use AWS credentials directly
+        AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        APP_ENV: ${{ inputs.environment }}
+
     - name: Serverless Deploy to dev
       # Hard-coding the environment for now, when we start dealing with other environments
       # look into environment feature of github actions/workflows.
