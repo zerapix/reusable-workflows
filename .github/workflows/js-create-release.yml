@@ -90,6 +90,6 @@ jobs:
               workflow_id: 'deployment.yml',
               ref: 'refs/tags/${{ needs.create-release.outputs.release-tag }}',
               inputs: {
-                environment: 'test'
+                environment: 'dev'
               }
             })
