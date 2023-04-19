@@ -11,10 +11,12 @@ on:
         type: string
         description: Host name to link to (will prepend 'prs*' to start of host).
         required: true
+
+concurrency: prs-deploy
+
 jobs:
   get-prs-slot:
     runs-on: ubuntu-latest
-    concurrency: get-pr-slot
     outputs:
       slot-num: ${{ steps.slot-num.outputs.result }}
     steps:
