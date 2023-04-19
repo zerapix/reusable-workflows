@@ -141,7 +141,7 @@ module.exports = ({github, context, devAppHost}) => {
         console.log(`All Found Used Slots (${allUsedSlots}), Selected Slot (${foundSlotNum}) for Stage (${stageName}); applying label (${newLabel}) to PR issue id (${context.issue.number}).`)
         return Promise.all(allPromises).then(
             result => {
-                return stageName
+                return foundSlotNum
             }
         )
     })
