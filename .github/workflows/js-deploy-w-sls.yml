@@ -22,11 +22,13 @@ on:
         type: boolean
         default: false
         description: Set to true if you want to set a pre-release version for deployment.
+
+concurrency: deploy-${{ inputs.environment }}-${{ inputs.override-stage-name }}
+
 jobs:
   deploy:
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
-    concurrency: deploy-${{ inputs.environment }}-${{ inputs.override-stage-name }}
     steps:
       - run: echo "Deploying For Environment ${{ inputs.environment }}; Ref ${{ github.ref }}"
 

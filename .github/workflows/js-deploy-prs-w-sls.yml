@@ -11,10 +11,12 @@ on:
         type: string
         description: Host name to link to (will prepend 'prs*' to start of host).
         required: true
+
+concurrency: deploy-prs
+
 jobs:
   get-prs-slot:
     runs-on: ubuntu-latest
-    concurrency: get-pr-slot
     outputs:
       slot-num: ${{ steps.slot-num.outputs.result }}
     steps:
@@ -42,23 +44,3 @@ jobs:
       override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
       pre-release: true
       reusable-ref: ${{ inputs.reusable-ref }}
-
-#
-#
-#      # Dispatch a deployment workflow for the PR.
-#      - name: Dispatch PR Deployment Workflow
-#        uses: actions/github-script@v6
-#        with:
-#          # Run a new workflow job, using originating repo's standard `deployment.yml` via workflow_dispatch
-#          script: |
-#            github.rest.actions.createWorkflowDispatch({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              workflow_id: 'deploy-pr.yml',
-#              ref: 'refs/tags/${{ needs.create-release.outputs.release-tag }}',
-#              inputs: {
-#                environment: 'prs'
-#                override-stage-name: 'prs${{ steps.slot-num.outputs.result }}'
-#                pre-release: true
-#              }
-#            })
