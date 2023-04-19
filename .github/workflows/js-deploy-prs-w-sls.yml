@@ -18,7 +18,7 @@ jobs:
     outputs:
       slot-num: ${{ steps.slot-num.outputs.result }}
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@test
+      - uses: zerapix/reusable-workflows/all-checkout@main
         with:
           reusable-ref: ${{ inputs.reusable-ref }}
       - uses: ./.reusable-workflows/js-setup-project
@@ -35,7 +35,7 @@ jobs:
 
   deploy-prs:
     needs: get-prs-slot
-    uses: zerapix/reusable-workflows/.github/workflows/js-deploy-w-sls.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/js-deploy-w-sls.yml@main
     secrets: inherit
     with:
       environment: 'prs'
