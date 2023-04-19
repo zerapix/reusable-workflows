@@ -11,7 +11,7 @@ on:
     outputs:
       created-release:
         description: "If final/tagged release was created or not."
-        value: ${{ jobs.create-release.outputs.created-release }}
+        value: ${{ jobs.create-pre-or-release.outputs.created-release }}
 name: Create (Pre-)Release
 jobs:
   create-pre-or-release:

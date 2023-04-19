@@ -1,0 +1,25 @@
+name: 'Setup Node and Yarn Project Deps'
+description: 'Reusable action to setup node and yarn.'
+inputs:
+  fetch-depth:
+    # Defaults to only current, use "0" to fetch all history for use by version bumper.
+    description: Git Fetch Depth
+    default: '1'
+runs:
+  using: "composite"
+  steps:
+    #----------------------------------------------
+    #       Set-up node + yarn
+    #----------------------------------------------
+    - name: Setup Node.js
+      id: setup_node
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18"
+        cache: "yarn"
+    - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
+      run: yarn install --frozen-lockfile
+      shell: bash
+    - name: Finished Echo
+      run: echo "Finished installing deps..."
+      shell: bash

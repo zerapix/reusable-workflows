@@ -1,0 +1,21 @@
+name: Create Release
+description: Reusable action to create Python releases.
+inputs:
+  GEMFURY_DEPLOY_TOKEN:
+    description: Gemfury Deploy Token
+    required: true
+  release-branch:
+    required: false
+    default: ''
+    description: Branch to open pull release PR against (defaults to repo default branch if not specified).
+outputs:
+  created-release:
+    description: true if a versioned release was created (false if only made release candidate PR)
+    value: ${{ steps.release.outputs.release_created }}
+runs:
+  using: composite
+  steps:
+    - run: echo "Running On Action Path $GITHUB_ACTION_PATH  --- pwd:"
+      shell: bash
+    - run: echo "pwd-path - $(pwd)"
+      shell: bash

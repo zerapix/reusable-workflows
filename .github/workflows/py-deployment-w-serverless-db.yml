@@ -39,7 +39,7 @@ jobs:
       - uses: zerapix/reusable-workflows/py-run-tests@main
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-      - uses: zerapix/reusable-workflows/py-deploy-serverless@main
+      - uses: zerapix/reusable-workflows/all-deploy-sls@main
         with:
           environment: ${{ inputs.environment }}
           override-stage-name: ${{ inputs.override-stage-name }}

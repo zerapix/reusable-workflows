@@ -8,9 +8,9 @@ runs:
   using: "composite"
   steps:
     #----------------------------------------------
-    #       Check-out repo, set-up python + poetry
+    #       Checkout repo, Set-up python + poetry
     #----------------------------------------------
-    - name: Checkout Repo
+    - name: Checkout Project Repo
       uses: actions/checkout@v3
     - name: Install poetry
       shell: bash
