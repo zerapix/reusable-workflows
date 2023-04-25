@@ -21,7 +21,7 @@ jobs:
     outputs:
       slot-num: ${{ steps.slot-num.outputs.result }}
     steps:
-      - name: PR Associated With ${{ github.event.number }}
+      - name: Deploying PR ${{ github.event.number }}
         run: echo Attached To PR ${{ github.event.number }}
       - uses: zerapix/reusable-workflows/all-checkout@test
         with:
