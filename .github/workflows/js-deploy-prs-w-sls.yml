@@ -12,7 +12,8 @@ on:
         description: Host name to link to (will prepend 'prs*' to start of host).
         required: true
 
-concurrency: deploy-prs
+concurrency: deploy-pr-${{ github.event.number }}
+name: Deploy PR
 
 jobs:
   get-prs-slot:
@@ -20,6 +21,8 @@ jobs:
     outputs:
       slot-num: ${{ steps.slot-num.outputs.result }}
     steps:
+      - name: Deploying PR ${{ github.event.number }}
+        run: echo Attached To PR ${{ github.event.number }}
       - uses: zerapix/reusable-workflows/all-checkout@main
         with:
           reusable-ref: ${{ inputs.reusable-ref }}
