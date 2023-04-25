@@ -13,7 +13,7 @@ on:
         required: true
 
 concurrency: deploy-pr-${{ github.event.number }}
-name: Deploy PR ${{ github.event.number }}
+name: Deploy PR
 
 jobs:
   get-prs-slot:
@@ -21,7 +21,7 @@ jobs:
     outputs:
       slot-num: ${{ steps.slot-num.outputs.result }}
     steps:
-      - name: Attached To PR ${{ github.event.number }}
+      - name: PR Associated With ${{ github.event.number }}
         run: echo Attached To PR ${{ github.event.number }}
       - uses: zerapix/reusable-workflows/all-checkout@test
         with:
