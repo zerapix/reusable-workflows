@@ -32,7 +32,7 @@ jobs:
     steps:
       - run: echo "Deploying For Environment ${{ inputs.environment }}; Ref ${{ github.ref }}"
 
-      - uses: zerapix/reusable-workflows/all-checkout@test
+      - uses: zerapix/reusable-workflows/all-checkout@main
         with:
           # fetch-depth 0 will check out all the commits and tag history.
           fetch-depth: 0
@@ -54,7 +54,7 @@ jobs:
       #       and if that's the case then we need to pass a flag to deployment action to skip
       #       setting up node/yarn again.
       #----------------------------------------------
-      - uses: zerapix/reusable-workflows/all-deploy-sls@test
+      - uses: zerapix/reusable-workflows/all-deploy-sls@main
         with:
           environment: ${{ inputs.environment }}
           override-stage-name: ${{ inputs.override-stage-name }}

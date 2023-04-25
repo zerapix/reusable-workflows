@@ -12,7 +12,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Python Project
-      uses: zerapix/reusable-workflows/py-setup-project@test
+      uses: zerapix/reusable-workflows/py-setup-project@main
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
     - name: Run tests

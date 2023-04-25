@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: deploy-${{ inputs.environment }}
     steps:
-      - uses: zerapix/reusable-workflows/py-run-tests@test
+      - uses: zerapix/reusable-workflows/py-run-tests@main
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-      - uses: zerapix/reusable-workflows/py-publish-fury@test
+      - uses: zerapix/reusable-workflows/py-publish-fury@main
         with:
           GEMFURY_PUBLISH_TOKEN: ${{ secrets.GEMFURY_PUBLISH_TOKEN }}
