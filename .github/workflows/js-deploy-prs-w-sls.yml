@@ -12,7 +12,9 @@ on:
         description: Host name to link to (will prepend 'prs*' to start of host).
         required: true
 
-concurrency: deploy-prs
+concurrency:
+  group: deploy-pr-${{ github.event.number }}
+  # cancel-in-progress: true
 
 jobs:
   get-prs-slot:
