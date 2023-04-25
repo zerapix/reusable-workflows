@@ -38,6 +38,7 @@ jobs:
           yarn commit-and-tag-version
           # Push branch first, if this fails we want to stop here (before push tag).
       - name: Push Release To Main
+        run: |
           echo "If Below Push Fails, that means another PR was merged; we let that next PR create the release and let us remain failed here.
           git push origin main
           git push --follow-tags origin main
