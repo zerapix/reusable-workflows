@@ -36,6 +36,8 @@ jobs:
           git config user.name "$(git log -n 1 --pretty=format:%an) (action)"
           git config user.email "$(git log -n 1 --pretty=format:%ae)"
           yarn commit-and-tag-version
+          # Push branch first, if this fails we want to stop here (before push tag).
+          git push origin main
           git push --follow-tags origin main
       - name: Get Tag Name
         id: tag-out
