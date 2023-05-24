@@ -47,7 +47,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     services:
       postgres:
-        image: postgres:13
+        image: postgres:14
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: pg-pass
@@ -58,4 +58,4 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-        - 5432:5432
+        - 15432:5432
