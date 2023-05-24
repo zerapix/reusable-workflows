@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Deploying PR ${{ github.event.number }}
         run: echo Attached To PR ${{ github.event.number }}
-      - uses: zerapix/reusable-workflows/all-checkout@main
+      - uses: zerapix/reusable-workflows/all-checkout@test
         with:
           reusable-ref: ${{ inputs.reusable-ref }}
       - uses: ./.reusable-workflows/js-setup-project
@@ -40,7 +40,7 @@ jobs:
 
   deploy-prs:
     needs: get-prs-slot
-    uses: zerapix/reusable-workflows/.github/workflows/js-deploy-w-sls.yml@main
+    uses: zerapix/reusable-workflows/.github/workflows/js-deploy-w-sls.yml@test
     secrets: inherit
     with:
       environment: 'prs'

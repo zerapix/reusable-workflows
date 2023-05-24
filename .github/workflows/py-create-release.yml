@@ -19,7 +19,7 @@ jobs:
     outputs:
       created-release: ${{ steps.release.outputs.release_created }}
     steps:
-      - uses: zerapix/reusable-workflows/py-run-tests@main
+      - uses: zerapix/reusable-workflows/py-run-tests@test
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
           RUN_TESTS: ${{ inputs.RUN_TESTS }}

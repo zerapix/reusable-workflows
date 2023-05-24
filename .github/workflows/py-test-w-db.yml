@@ -13,7 +13,7 @@ jobs:
       POSTGRES_HOST: localhost
     steps:
       - name: Setup and Test Project
-        uses: zerapix/reusable-workflows/py-run-tests@main
+        uses: zerapix/reusable-workflows/py-run-tests@test
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
     services:

@@ -12,7 +12,7 @@ jobs:
     concurrency: create-release
     runs-on: ubuntu-latest
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@main
+      - uses: zerapix/reusable-workflows/all-checkout@test
         with:
           # fetch-depth 0 will check out all the commits and tags needed for release-bumper
           fetch-depth: 0
