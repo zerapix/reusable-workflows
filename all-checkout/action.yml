@@ -8,6 +8,10 @@ inputs:
   reusable-ref:
     default: main
     description: Reusable workflow branch/tag/etc I am being called in.
+  zreleasebot_app_id:
+    description: zReleaseBot - from org secrets - App ID
+  zreleasebot_private_key:
+    description: zReleaseBot - from org secrets - Private Key (used to sign the JWT)
 runs:
   using: "composite"
   steps:

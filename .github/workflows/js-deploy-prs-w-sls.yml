@@ -26,6 +26,8 @@ jobs:
       - uses: zerapix/reusable-workflows/all-checkout@test
         with:
           reusable-ref: ${{ inputs.reusable-ref }}
+          zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
+          zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
       - uses: ./.reusable-workflows/js-setup-project
 
       # Get/Assign the prs* stage name for pr.
