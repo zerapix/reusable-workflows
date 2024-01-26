@@ -84,3 +84,6 @@ runs:
         AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
         APP_ENV: ${{ inputs.environment }}
 
+        # For now, we hard-code to default to the us-west-2 aws region.
+        AWS_REGION: us-west-2
+        AWS_DEFAULT_REGION: us-west-2
