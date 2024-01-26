@@ -22,8 +22,8 @@ runs:
       id: my-app
       uses: getsentry/action-github-app-token@v2
       with:
-        app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
-        private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
+        app_id: ${{ inputs.ZRELEASEBOT_APP_ID }}
+        private_key: ${{ inputs.ZRELEASEBOT_PRIVATE_KEY }}
     - name: Checkout Project Repo
       uses: actions/checkout@v4
       with:
