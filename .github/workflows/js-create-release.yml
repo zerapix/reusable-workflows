@@ -14,7 +14,7 @@ on:
 concurrency: create-release
 run-name: Create Release + Auto Deploy by @${{ github.actor }}
 
-name: merge-to-main-release-please
+name: Create Release
 jobs:
   create-release:
     runs-on: ubuntu-latest

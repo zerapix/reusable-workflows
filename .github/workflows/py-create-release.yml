@@ -3,37 +3,44 @@
 on:
   workflow_call:
     inputs:
+      reusable-ref:
+        type: string
+        default: main
+        description: Reusable workflow branch/tag/etc I am being called in.
+
+      # *** Ignored Inputs ***
+      # (here in case something tries to pass it in, workflow will still work).
       RUN_TESTS:
         required: false
         type: string
-        description: Python package we are versioning/deploying; only skips if string is set to 'false' (using string, as composite actions only use strings)
+        description: _ ***CURRENTLY IGNORED** Python package we are versioning/deploying; only skips if string is set to 'false' (using string, as composite actions only use strings)
         default: 'true'
+
     outputs:
       created-release:
         description: "If final/tagged release was created or not."
         value: ${{ jobs.create-pre-or-release.outputs.created-release }}
-name: Create (Pre-)Release
+
+name: Create Release
 jobs:
   create-pre-or-release:
     runs-on: ubuntu-latest
+    # If are already on a 'release' commit, we should skip this job.
+    if: "!startsWith(github.event.head_commit.message, 'chore(release): ')"
     outputs:
-      created-release: ${{ steps.release.outputs.release_created }}
+      release-tag: ${{ steps.tag-out.outputs.value }}
     steps:
-      - uses: zerapix/reusable-workflows/py-run-tests@test
+      - uses: zerapix/reusable-workflows/all-checkout@test
         with:
-          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-          RUN_TESTS: ${{ inputs.RUN_TESTS }}
-      - name: Install tomlkit
-        # Ensure tomlkit is installed so I can retrieve package info on next step.
-        # In Python 3.11, there is now a built-in `tomllib` library we can use.
-        # Once everything is on Python 3.11, we can change this code to use `tomllib` instead.
-        run: poetry run pip install tomlkit
-      - name: Retrieve Project Package via tomlkit
-        run: |
-          PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
-          echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
-      - uses: google-github-actions/release-please-action@v3
+          # fetch-depth 0 will check out all the commits and tags needed for release-bumper
+          fetch-depth: 0
+          reusable-ref: ${{ inputs.reusable-ref }}
+          zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
+          zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
+
+      - uses: ./.reusable-workflows/py-setup-project
+      - uses: zerapix/reusable-workflows/py-create-release@test
         id: release
         with:
-          release-type: python
-          package-name: ${{ env.PY_PKG }}
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+          release-branch: ${{ inputs.release-branch }}
