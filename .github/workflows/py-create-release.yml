@@ -30,6 +30,12 @@ jobs:
     outputs:
       release-tag: ${{ steps.tag-out.outputs.value }}
     steps:
+      - name: (debug + failure) Setup SSH Session
+        uses: mxschmitt/action-tmate@v3
+#        if: ${{ runner.debug == 1 }}
+        with:
+          timeout-minutes: 20
+          limit-access-to-actor: true
       - uses: zerapix/reusable-workflows/all-checkout@test
         with:
           # fetch-depth 0 will check out all the commits and tags needed for release-bumper
@@ -51,12 +57,7 @@ jobs:
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
 
-      - name: (debug + failure) Setup SSH Session
-        uses: mxschmitt/action-tmate@v3
-#        if: ${{ runner.debug == 1 }}
-        with:
-          timeout-minutes: 20
-          limit-access-to-actor: true
+
 
       - uses: ./.reusable-workflows/py-create-release
         id: release
