@@ -30,12 +30,7 @@ jobs:
     outputs:
       release-tag: ${{ steps.tag-out.outputs.value }}
     steps:
-#      - name: (debug + failure) Setup SSH Session
-#        uses: mxschmitt/action-tmate@v3
-##        if: ${{ runner.debug == 1 }}
-#        with:
-#          timeout-minutes: 20
-#          limit-access-to-actor: true
+
 
 
       - uses: zerapix/reusable-workflows/all-checkout@test
@@ -46,7 +41,12 @@ jobs:
           zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
           zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
 
-
+      - name: (debug + failure) Setup SSH Session
+        uses: mxschmitt/action-tmate@v3
+#        if: ${{ runner.debug == 1 }}
+        with:
+          timeout-minutes: 20
+          limit-access-to-actor: true
 #        env:
 #          # todo: checkout what we can do with `SERVERLESS_ACCESS_KEY`:
 #          #  SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
