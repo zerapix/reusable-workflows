@@ -38,12 +38,7 @@ jobs:
           zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
           zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
 
-      - name: (debug + failure) Setup SSH Session
-        uses: mxschmitt/action-tmate@v3
-#        if: ${{ runner.debug == 1 }}
-        with:
-          timeout-minutes: 20
-          limit-access-to-actor: true
+
 #        env:
 #          # todo: checkout what we can do with `SERVERLESS_ACCESS_KEY`:
 #          #  SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
@@ -55,6 +50,13 @@ jobs:
       - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+
+      - name: (debug + failure) Setup SSH Session
+        uses: mxschmitt/action-tmate@v3
+#        if: ${{ runner.debug == 1 }}
+        with:
+          timeout-minutes: 20
+          limit-access-to-actor: true
 
       - uses: ./.reusable-workflows/py-create-release
         id: release
