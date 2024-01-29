@@ -30,16 +30,18 @@ jobs:
     outputs:
       release-tag: ${{ steps.tag-out.outputs.value }}
     steps:
-#      - name: (debug + failure) Setup SSH Session
-#        uses: mxschmitt/action-tmate@v3
-##        if: ${{ runner.debug == 1 }}
-#        with:
-#          timeout-minutes: 20
-#          limit-access-to-actor: true
+
       - name: Symlink Reusable Workflows
         shell: bash
         run: ln -s /home/runner/work/_actions/zerapix/reusable-workflows/${{ inputs.reusable-ref }} .reusable-workflows
-        
+
+      - name: (debug + failure) Setup SSH Session
+        uses: mxschmitt/action-tmate@v3
+#        if: ${{ runner.debug == 1 }}
+        with:
+          timeout-minutes: 20
+          limit-access-to-actor: true
+
       - uses: ./reusable-workflows/all-checkout
         with:
           # fetch-depth 0 will check out all the commits and tags needed for release-bumper
