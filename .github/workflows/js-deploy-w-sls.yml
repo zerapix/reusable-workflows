@@ -39,7 +39,7 @@ jobs:
           reusable-ref: ${{ inputs.reusable-ref }}
           zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
           zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
-      - uses: ./.reusableusable-workflows/js-setup-project
+      - uses: ./.reusable-workflows/js-setup-project
 
       # Setup pre-release version string on package if needed
       # Example Pre-Release Version String: "0.1.34-3-g90111b9"
