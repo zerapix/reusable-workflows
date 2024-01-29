@@ -15,7 +15,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: ./.reusable-workflows/py-run-tests
+    - uses: ../.reusable-workflows/py-run-tests
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
     - name: Install tomlkit
@@ -29,7 +29,7 @@ runs:
       run: |
         PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
         echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
-    - uses: ./.reusable-workflows/all-commit-and-tag-release
+    - uses: ../.reusable-workflows/all-commit-and-tag-release
 #      id: release
 #      with:
 #        release-type: python

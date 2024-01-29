@@ -15,7 +15,7 @@ runs:
      # TODO: Make sure we always check it out at the workflow level
      #     now, and not have it implied with the testing action.
 #    - name: Setup Python Project
-#      uses: ./.reusable-workflows/py-setup-project
+#      uses: ../.reusable-workflows/py-setup-project
 #      with:
 #        GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
     - name: Run tests
