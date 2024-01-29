@@ -36,7 +36,9 @@ jobs:
 #        with:
 #          timeout-minutes: 20
 #          limit-access-to-actor: true
-
+      - name: Symlink Reusable Workflows
+        shell: bash
+        run: ln -s /home/runner/work/_actions/zerapix/reusable-workflows/${{ inputs.reusable-ref }} .reusable-workflows
         
       - uses: ./reusable-workflows/all-checkout
         with:
