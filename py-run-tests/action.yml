@@ -3,7 +3,8 @@ description: 'Reusable action to setup python, poetry and project dependencies i
 inputs:
   GEMFURY_DEPLOY_TOKEN:
     description: Gemfury Deploy Token
-    required: true
+    required: false
+    default: ''
   RUN_TESTS:
     description: If equal to exactly 'false', will skip running tests.
     required: false
@@ -11,11 +12,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup Python Project
-      uses: zerapix/reusable-workflows/py-setup-project@test
-      with:
-        GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
+     # TODO: Make sure we always check it out at the workflow level
+     #     now, and not have it implied with the testing action.
+#    - name: Setup Python Project
+#      uses: ./.reusable-workflows/py-setup-project
+#      with:
+#        GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
     - name: Run tests
-      if: ${{ inputs.RUN_TESTS != 'false' }}
+#      if: ${{ inputs.RUN_TESTS != 'false' }}
       shell: bash
       run: poetry run pytest

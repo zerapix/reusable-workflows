@@ -39,7 +39,10 @@ jobs:
           zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
 
       - uses: ./.reusable-workflows/py-setup-project
-      - uses: zerapix/reusable-workflows/py-create-release@test
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+
+      - uses: ./.reusable-workflows/py-create-release
         id: release
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
