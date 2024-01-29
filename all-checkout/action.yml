@@ -38,6 +38,6 @@ runs:
 #      uses: actions/checkout@v4
 #      with:
 #        repository: zerapix/reusable-workflows
-#        path: .reusable-workflows
+#        path: repos/reusable-workflows
 #        ref: ${{ inputs.reusable-ref }}
 #        token: ${{ steps.my-app.outputs.token }}

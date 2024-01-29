@@ -31,7 +31,7 @@ jobs:
           zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
           zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
 
-      - uses: ../.reusable-workflows/js-setup-project
+      - uses: ./.reusableusable-workflows/js-setup-project
 
       - run: echo Running On Ref ${{ github.ref }}
       - name: Increment, Tag and Commit for Release
