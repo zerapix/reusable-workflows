@@ -29,6 +29,7 @@ runs:
       run: |
         PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
         echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
+
     - uses: ./.reusableusable-workflows/all-commit-and-tag-release
 #      id: release
 #      with:

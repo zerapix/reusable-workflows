@@ -8,7 +8,7 @@ runs:
   using: "composite"
   steps:
     #----------------------------------------------
-    #       Checkout repo, Set-up python + poetry
+    #       Set-up python + poetry
     #----------------------------------------------
     - name: Install poetry
       shell: bash
