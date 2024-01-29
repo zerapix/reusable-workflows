@@ -55,10 +55,6 @@ jobs:
 #          AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
 #          APP_ENV: ${{ inputs.environment }}
 
-      - name: Fail It!
-        shell: bash
-        run: exit 1
-
 
       - uses: ./.reusable-workflows/py-setup-project
         with:
