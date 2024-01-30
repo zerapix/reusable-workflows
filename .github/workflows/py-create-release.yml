@@ -54,7 +54,7 @@ jobs:
     # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
     if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
     steps:
-      - name: Release Thunk
+      - name: Release Deployment Thunk
         run: echo "Deployed Tag ${{ needs.create-release.outputs.created-release-tag-name }}"
       - name: Trigger Workflow
         uses: actions/github-script@v7
