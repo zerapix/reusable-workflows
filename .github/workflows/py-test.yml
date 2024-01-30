@@ -6,7 +6,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - uses: zerapix/reusable-workflows/all-checkout@test
       - name: Setup and Test Project
-        uses: zerapix/reusable-workflows/py-run-tests@test
+        uses: ./.reusable-workflows/py-run-tests
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}

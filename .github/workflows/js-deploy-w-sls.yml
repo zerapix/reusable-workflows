@@ -13,17 +13,12 @@ on:
         default: ''
         description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
 
-      reusable-ref:
-        type: string
-        default: main
-        description: Reusable workflow branch/tag/etc I am being called in.
-
       pre-release:
         type: boolean
         default: false
         description: Set to true if you want to set a pre-release version for deployment.
 
-concurrency: deploy-${{ inputs.environment }}-${{ inputs.override-stage-name }}
+concurrency: deploy-${{ inputs.environment }}
 
 jobs:
   deploy:
@@ -33,12 +28,6 @@ jobs:
       - run: echo "Deploying For Environment ${{ inputs.environment }}; Ref ${{ github.ref }}"
 
       - uses: zerapix/reusable-workflows/all-checkout@test
-        with:
-          # fetch-depth 0 will check out all the commits and tag history.
-          fetch-depth: 0
-          reusable-ref: ${{ inputs.reusable-ref }}
-          zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
-          zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
       - uses: ./.reusable-workflows/js-setup-project
 
       # Setup pre-release version string on package if needed
@@ -56,7 +45,7 @@ jobs:
       #       and if that's the case then we need to pass a flag to deployment action to skip
       #       setting up node/yarn again.
       #----------------------------------------------
-      - uses: zerapix/reusable-workflows/all-deploy-sls@test
+      - uses: ./.reusable-workflows/all-deploy-sls
         with:
           environment: ${{ inputs.environment }}
           override-stage-name: ${{ inputs.override-stage-name }}

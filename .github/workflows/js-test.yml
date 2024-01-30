@@ -1,11 +1,6 @@
 # Normally called when a merge to the main branch happens.
 on:
   workflow_call:
-    inputs:
-      reusable-ref:
-        type: string
-        default: main
-        description: Reusable workflow branch/tag/etc I am being called in.
 name: test-path
 jobs:
   create-release:
@@ -13,12 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: zerapix/reusable-workflows/all-checkout@test
-        with:
-          # fetch-depth 0 will check out all the commits and tags needed for release-bumper
-          fetch-depth: 0
-          reusable-ref: ${{ inputs.reusable-ref }}
-          zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
-          zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
       - uses: ./.reusable-workflows/js-setup-project
 
       - run: echo "Running On Action Path $GITHUB_ACTION_PATH  --- pwd:"
@@ -31,6 +20,4 @@ jobs:
           printf '%s\n' "$JSON_DOC" > foo.json
           cat foo.json
       - uses: ./.reusable-workflows/js-test-action
-##      # Can use this to get an SSH endpoint you can connect to and debug via a terminal session.
-#      - name: Setup tmate session
-#        uses: mxschmitt/action-tmate@v3
+
