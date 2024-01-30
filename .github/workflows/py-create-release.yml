@@ -39,14 +39,9 @@ jobs:
       - uses: ./.reusable-workflows/py-run-tests
         name: Normal Test (without DB)
         if: ${{ !inputs.need-testing-db }}
-        with:
-          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
 
       - uses: ./.reusable-workflows/py-create-release
         id: release
-        with:
-          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-          release-branch: ${{ inputs.release-branch }}
 
   # Create Separate Job, to distinguish release-creation from deployment
   # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
