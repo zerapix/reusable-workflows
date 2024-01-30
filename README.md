@@ -36,7 +36,7 @@ concurrency: deployment-${{ inputs.environment }}
 
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@z_v2
     secrets: inherit
     with:
       environment: ${{ inputs.environment }}
@@ -52,7 +52,7 @@ concurrency: deployment-dev
 
 jobs:
   deploy-dev:
-    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@z_v2
     secrets: inherit
     with:
       environment: dev
@@ -70,7 +70,7 @@ on:
           - main
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-create-release.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-create-release.yml@z_v2
     #if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged }}
     secrets: inherit
 ```
@@ -82,7 +82,7 @@ name: Run Tests
 on: pull_request
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@main
+    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@z_v2
     secrets: inherit
 ```
 

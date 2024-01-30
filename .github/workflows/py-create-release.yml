@@ -16,7 +16,7 @@ jobs:
   test-with-db-if-needed:
     name: Test With DB If Needed
     if: ${{ inputs.need-testing-db }}
-    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@main
+    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@z_v2
 
   create-release:
     name: Create Release
@@ -28,7 +28,7 @@ jobs:
     outputs:
       created-release-tag-name: ${{ steps.release.outputs.created-release-tag-name }}
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout-writable@main
+      - uses: zerapix/reusable-workflows/all-checkout-writable@z_v2
         with:
           zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
           zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}

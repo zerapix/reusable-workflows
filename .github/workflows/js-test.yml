@@ -7,7 +7,7 @@ jobs:
     concurrency: create-release
     runs-on: ubuntu-latest
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@main
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
       - uses: ./.reusable-workflows/js-setup-project
 
       - run: echo "Running On Action Path $GITHUB_ACTION_PATH  --- pwd:"

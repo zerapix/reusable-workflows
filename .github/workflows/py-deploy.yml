@@ -20,7 +20,7 @@ jobs:
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@main
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
       - uses: ./.reusable-workflows/all-deploy-sls
         with:
           environment: ${{ inputs.environment }}

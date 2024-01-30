@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Deploying PR ${{ github.event.number }}
         run: echo Attached To PR ${{ github.event.number }}
-      - uses: zerapix/reusable-workflows/all-checkout@main
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
       - uses: ./.reusable-workflows/js-setup-project
 
       # Get/Assign the prs* stage name for pr.
