@@ -7,9 +7,8 @@ runs:
     - run: echo Running On Ref ${{ github.ref }}
       shell: bash
 
-    - run: echo Install Commit and Tag Version
+    - run: npm install commit-and-tag-version
       shell: bash
-      run: npm install commit-and-tag-version
 
     - name: Increment, Tag and Commit for Release
       shell: bash
