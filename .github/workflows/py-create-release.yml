@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     # If are already on a 'release' commit, we should skip this job.
     # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
-    #if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
+    if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
     steps:
       - name: Release Thunk
         run: echo "Deployed Tag ${{ needs.create-release.outputs.created-release-tag-name }}"
