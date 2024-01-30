@@ -36,6 +36,9 @@ runs:
     # to a specific location. Instead of checking out the repo twice, using sym-link to already
     # checkout version (plus when building things, it's just a symlink and so hopefully avoids
     # (accidentally included files from the reusable-workflows repo in the deployments).
+    - name: Test Context action_path
+      shell: bash
+      run: echo ${{ github.action_path }}
     - name: Symlink Reusable Workflows
       shell: bash
       run: ln -s /home/runner/work/_actions/zerapix/reusable-workflows/${{ inputs.reusable-ref }} .reusable-workflows

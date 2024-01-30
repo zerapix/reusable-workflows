@@ -1,7 +1,7 @@
 name: Commit And Tag Release
 description: Reusable action to commit and tag release via commit-and-tag-version.
 outputs:
-  version-tag-name:
+  created-release-tag-name:
     description: Name of the create version tag.
     value: ${{ steps.tag-out.outputs.value }}
 runs:
