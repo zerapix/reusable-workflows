@@ -6,7 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@test
+      - uses: zerapix/reusable-workflows/all-checkout@main
       - name: Setup and Test Project
         uses: ./.reusable-workflows/py-run-tests
         with:

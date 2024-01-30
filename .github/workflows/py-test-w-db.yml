@@ -12,7 +12,7 @@ jobs:
       POSTGRES_PORT: 5432
       POSTGRES_HOST: localhost
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@test
+      - uses: zerapix/reusable-workflows/all-checkout@main
       - name: Setup and Test Project
         uses: ./.reusable-workflows/py-run-tests
         with:

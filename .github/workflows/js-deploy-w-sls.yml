@@ -27,7 +27,7 @@ jobs:
     steps:
       - run: echo "Deploying For Environment ${{ inputs.environment }}; Ref ${{ github.ref }}"
 
-      - uses: zerapix/reusable-workflows/all-checkout@test
+      - uses: zerapix/reusable-workflows/all-checkout@main
       - uses: ./.reusable-workflows/js-setup-project
 
       # Setup pre-release version string on package if needed
