@@ -1,21 +1,8 @@
-name: 'Setup Python Project + Run Unit Tests'
+name: 'Run Unit Tests'
 description: 'Reusable action to setup python, poetry and project dependencies in a standard way.'
-inputs:
-  GEMFURY_DEPLOY_TOKEN:
-    description: Gemfury Deploy Token
-    required: true
-  RUN_TESTS:
-    description: If equal to exactly 'false', will skip running tests.
-    required: false
-    default: 'true'
 runs:
   using: "composite"
   steps:
-    - name: Setup Python Project
-      uses: zerapix/reusable-workflows/py-setup-project@main
-      with:
-        GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
     - name: Run tests
-      if: ${{ inputs.RUN_TESTS != 'false' }}
       shell: bash
       run: poetry run pytest

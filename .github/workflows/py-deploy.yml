@@ -1,17 +1,5 @@
 name: Deploy To Environment
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: Environment to deploy in.
-        type: environment
-        default: dev
-
-      override-stage-name:
-        required: false
-        type: string
-        default: ''
-        description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
   workflow_call:
     inputs:
       environment:
@@ -24,16 +12,16 @@ on:
         type: string
         default: ''
         description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
+
+concurrency: deploy-${{ inputs.environment }}
+
 jobs:
   deploy:
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
-    concurrency: deploy-${{ inputs.environment }}
     steps:
-      - uses: zerapix/reusable-workflows/py-run-tests@main
-        with:
-          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-      - uses: zerapix/reusable-workflows/all-deploy-sls@main
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: ./.reusable-workflows/all-deploy-sls
         with:
           environment: ${{ inputs.environment }}
           override-stage-name: ${{ inputs.override-stage-name }}

@@ -1,15 +1,17 @@
-name: Deploy To Environment
+# Normally called when a merge to the main branch happens.
 on:
-  workflow_dispatch:
   workflow_call:
+name: merge-to-main-release-please
+concurrency: publish
+
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
-    concurrency: deploy-${{ inputs.environment }}
     steps:
-      - uses: zerapix/reusable-workflows/py-run-tests@main
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-      - uses: zerapix/reusable-workflows/py-publish-fury@main
+      - uses: ./.reusable-workflows/py-publish-fury
         with:
           GEMFURY_PUBLISH_TOKEN: ${{ secrets.GEMFURY_PUBLISH_TOKEN }}

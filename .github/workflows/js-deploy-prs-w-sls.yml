@@ -2,11 +2,6 @@
 on:
   workflow_call:
     inputs:
-      reusable-ref:
-        type: string
-        default: main
-        description: Reusable workflow branch/tag/etc I am being called in.
-
       dev-app-host:
         type: string
         description: Host name to link to (will prepend 'prs*' to start of host).
@@ -23,13 +18,11 @@ jobs:
     steps:
       - name: Deploying PR ${{ github.event.number }}
         run: echo Attached To PR ${{ github.event.number }}
-      - uses: zerapix/reusable-workflows/all-checkout@main
-        with:
-          reusable-ref: ${{ inputs.reusable-ref }}
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
       - uses: ./.reusable-workflows/js-setup-project
 
       # Get/Assign the prs* stage name for pr.
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v7
         id: slot-num
         with:  # "pixydocs.dev.zerapix.com"
           script: |
@@ -40,10 +33,9 @@ jobs:
 
   deploy-prs:
     needs: get-prs-slot
-    uses: zerapix/reusable-workflows/.github/workflows/js-deploy-w-sls.yml@main
+    uses: ./.reusable-workflows/.github/workflows/js-deploy-w-sls.yml
     secrets: inherit
     with:
       environment: 'prs'
       override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
       pre-release: true
-      reusable-ref: ${{ inputs.reusable-ref }}

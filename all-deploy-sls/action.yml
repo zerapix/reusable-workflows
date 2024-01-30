@@ -25,9 +25,9 @@ runs:
     #----------------------------------------------
     - name: Setup Node.js
       id: setup_node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: "18"
+        node-version: "20"
         cache: "yarn"
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       run: yarn install --frozen-lockfile
@@ -84,3 +84,6 @@ runs:
         AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
         APP_ENV: ${{ inputs.environment }}
 
+        # For now, we hard-code to default to the us-west-2 aws region.
+        AWS_REGION: us-west-2
+        AWS_DEFAULT_REGION: us-west-2

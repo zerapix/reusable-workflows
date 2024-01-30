@@ -3,37 +3,67 @@
 on:
   workflow_call:
     inputs:
-      RUN_TESTS:
-        required: false
-        type: string
-        description: Python package we are versioning/deploying; only skips if string is set to 'false' (using string, as composite actions only use strings)
-        default: 'true'
-    outputs:
-      created-release:
-        description: "If final/tagged release was created or not."
-        value: ${{ jobs.create-pre-or-release.outputs.created-release }}
-name: Create (Pre-)Release
+      need-testing-db:
+        type: boolean
+        default: false
+        description: If DB service is needed for testing.
+
+concurrency: create-release
+run-name: Create Release + Auto Deploy by @${{ github.actor }}
+
+name: Create Release
 jobs:
-  create-pre-or-release:
+  test-with-db-if-needed:
+    name: Test With DB If Needed
+    if: ${{ inputs.need-testing-db }}
+    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@z_v2
+
+  create-release:
+    name: Create Release
+    needs: test-with-db-if-needed
     runs-on: ubuntu-latest
+    # If are already on a 'release' commit, we should skip this job.
+    # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
+    if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
     outputs:
-      created-release: ${{ steps.release.outputs.release_created }}
+      created-release-tag-name: ${{ steps.release.outputs.created-release-tag-name }}
     steps:
-      - uses: zerapix/reusable-workflows/py-run-tests@main
+      - uses: zerapix/reusable-workflows/all-checkout-writable@z_v2
+        with:
+          zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
+          zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
+
+      - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
-          RUN_TESTS: ${{ inputs.RUN_TESTS }}
-      - name: Install tomlkit
-        # Ensure tomlkit is installed so I can retrieve package info on next step.
-        # In Python 3.11, there is now a built-in `tomllib` library we can use.
-        # Once everything is on Python 3.11, we can change this code to use `tomllib` instead.
-        run: poetry run pip install tomlkit
-      - name: Retrieve Project Package via tomlkit
-        run: |
-          PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
-          echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
-      - uses: google-github-actions/release-please-action@v3
+
+      - uses: ./.reusable-workflows/py-run-tests
+        name: Normal Test (without DB)
+        if: ${{ !inputs.need-testing-db }}
+
+      - uses: ./.reusable-workflows/py-create-release
         id: release
+
+  # Create Separate Job, to distinguish release-creation from deployment
+  # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
+  deploy-release:
+    name: Trigger Release Auto Deploy
+    needs: create-release
+    runs-on: ubuntu-latest
+    # If are already on a 'release' commit, we should skip this job.
+    # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
+    if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
+    steps:
+      - name: Release Deployment Thunk
+        run: echo "Deployed Tag ${{ needs.create-release.outputs.created-release-tag-name }}"
+      - name: Trigger Workflow
+        uses: actions/github-script@v7
         with:
-          release-type: python
-          package-name: ${{ env.PY_PKG }}
+          # Run a new workflow job, using originating repo's standard `deployment.yml` via workflow_dispatch
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deployment-auto.yml',
+              ref: 'refs/tags/${{ needs.create-release.outputs.created-release-tag-name }}',
+            })

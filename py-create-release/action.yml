@@ -1,23 +1,12 @@
 name: Create Release
 description: Reusable action to create Python releases.
-inputs:
-  GEMFURY_DEPLOY_TOKEN:
-    description: Gemfury Deploy Token
-    required: true
-  release-branch:
-    required: false
-    default: ''
-    description: Branch to open pull release PR against (defaults to repo default branch if not specified).
 outputs:
-  created-release:
-    description: true if a versioned release was created (false if only made release candidate PR)
-    value: ${{ steps.release.outputs.release_created }}
+  created-release-tag-name:
+    description: Tag name of the created release
+    value: ${{ steps.release.outputs.created-release-tag-name }}
 runs:
   using: composite
   steps:
-    - uses: zerapix/reusable-workflows/py-run-tests@main
-      with:
-        GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
     - name: Install tomlkit
       # Ensure tomlkit is installed, so I can retrieve package info on next step.
       # In Python 3.11, there is now a built-in `tomllib` library we can use.
@@ -28,10 +17,15 @@ runs:
       shell: bash
       run: |
         PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
-        echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
-    - uses: google-github-actions/release-please-action@v3
+        echo "PY_Z_MODULE=$PY_OUTPUT" | tr - _ >> $GITHUB_ENV
+
+    - name: Copy + Configure .versionrc.json File...
+      shell: bash
+      run: |
+        cp .reusable-workflows/versionsrc-config/python.versionrc.json .versionrc.json
+        echo "`jq '.bumpFiles[2].filename="'$PY_Z_MODULE'/__init__.py"' .versionrc.json`" > .versionrc.json
+      env:
+        PY_Z_MODULE: ${{ env.PY_Z_MODULE }}
+    - uses: ./.reusable-workflows/all-commit-and-tag-release
       id: release
-      with:
-        release-type: python
-        package-name: ${{ env.PY_PKG }}
-        default-branch: ${{ inputs.release-branch }}
+

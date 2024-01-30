@@ -1,5 +1,10 @@
 name: 'Setup Node and Yarn Project Deps'
-description: 'Reusable action to checkout project'
+description: 'Reusable action to setup node and yarn.'
+inputs:
+  zreleasebot_app_id:
+    description: zReleaseBot - from org secrets - App ID
+  zreleasebot_private_key:
+    description: zReleaseBot - from org secrets - Private Key (used to sign the JWT)
 runs:
   using: "composite"
   steps:
@@ -8,8 +13,18 @@ runs:
     #----------------------------------------------
     # ln -s /home/runner/work/_actions/./.reusable-workflows/test .reusable-workflows
 
+    - name: zReleaseBot Token
+      id: my-app
+      uses: getsentry/action-github-app-token@v2
+      with:
+        app_id: ${{ inputs.ZRELEASEBOT_APP_ID }}
+        private_key: ${{ inputs.ZRELEASEBOT_PRIVATE_KEY }}
     - name: Checkout Project Repo
       uses: actions/checkout@v4
+      with:
+        # fetch-depth 0 will check out all the commits and tags needed for release-bumper
+        fetch-depth: 0
+        token: ${{ steps.my-app.outputs.token }}
     # When you use an action from a repo, github will do a local checkout of the repo
     # to a specific location. Instead of checking out the repo twice, using sym-link to already
     # checkout version (plus when building things, it's just a symlink and so hopefully avoids
