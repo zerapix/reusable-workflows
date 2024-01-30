@@ -38,7 +38,7 @@ runs:
     # (accidentally included files from the reusable-workflows repo in the deployments).
     - name: Symlink Reusable Workflows
       shell: bash
-      run: ln -s /home/runner/work/_actions/zerapix/reusable-workflows/${{ github.action_path }}/.. .reusable-workflows
+      run: ln -s ${{ github.action_path }}/.. .reusable-workflows
 #    - name: Checkout Reusable Repo
 #      uses: actions/checkout@v4
 #      with:
