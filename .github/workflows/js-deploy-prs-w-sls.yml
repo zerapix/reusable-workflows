@@ -22,7 +22,7 @@ jobs:
       - uses: ./.reusable-workflows/js-setup-project
 
       # Get/Assign the prs* stage name for pr.
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v7
         id: slot-num
         with:  # "pixydocs.dev.zerapix.com"
           script: |

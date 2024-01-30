@@ -43,7 +43,7 @@ jobs:
       - name: Release Thunk
         run: echo "Deployed Tag ${{ needs.create-release.outputs.created-release-tag-name }}"
       - name: Trigger Workflow
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           # Run a new workflow job, using originating repo's standard `deployment.yml` via workflow_dispatch
           script: |
