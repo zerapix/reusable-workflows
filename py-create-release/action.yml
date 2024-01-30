@@ -28,9 +28,16 @@ runs:
       shell: bash
       run: |
         PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
-        echo "PY_PKG=$PY_OUTPUT" >> $GITHUB_ENV
+        echo "PY_Z_MODULE=$PY_OUTPUT" | tr - _ >> $GITHUB_ENV
+
+    - name: Copy + Configure .versionrc.json File...
+      shell: bash
+      run: |
+        cp .reusable-workflows/versionsrc-config/python.versionrc.json .versionrc.json
+        echo "`jq '.bumpFiles[2].filename="${{ env.PY_Z_MODULE }}/__init__.py"' .versionrc.json` > .versionrc.json
 
     - uses: ./.reusable-workflows/all-commit-and-tag-release
+
 #      id: release
 #      with:
 #        release-type: python
