@@ -34,7 +34,7 @@ runs:
       shell: bash
       run: |
         cp .reusable-workflows/versionsrc-config/python.versionrc.json .versionrc.json
-        echo "`jq '.bumpFiles[2].filename="$PY_Z_MODULE/__init__.py"' config.json`"
+        echo "`jq '.bumpFiles[2].filename="$PY_Z_MODULE/__init__.py"' .versionrc.json`" > .versionrc.json
       env:
         PY_Z_MODULE: ${{ env.PY_Z_MODULE }}
     - name: (debug + failure) Setup SSH Session
