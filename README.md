@@ -15,7 +15,7 @@ The standard configuration in other Python/Serverless repos is this:
 On Deployment To Specific Environment Workflow:
 
 ```yaml
-name: Deploy To Environment
+name: Deploy to Environment
 on:
   workflow_dispatch:
     inputs:
@@ -23,58 +23,84 @@ on:
         description: Environment to deploy in.
         type: environment
         default: dev
+
+      override-stage-name:
+        required: false
+        type: string
+        default: ''
+        description: >- 
+          Defaults to the environment name; use this if the stage is different;
+          like if its an account-wide "all" stage or Pull Request 'prs*' stage.
+
+concurrency: deployment-${{ inputs.environment }}
+
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-deployment-w-serverless-db.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@test
+    secrets: inherit
     with:
       environment: ${{ inputs.environment }}
-    secrets: inherit
-
+      override-stage-name: ${{ inputs.override-stage-name }}
 ```
 
-On push to main branch:
+Workflow that runs for automatically deploying just-created release:
 
 ```yaml
-name: Create Either PR or Release
+name: Auto Deploy to dev
+on: workflow_dispatch
+concurrency: deployment-dev
+
+jobs:
+  deploy-dev:
+    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@test
+    secrets: inherit
+    with:
+      environment: dev
+```
+
+Create Releases:
+
+```yaml
+name: Create Release
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - main
+          - main
 jobs:
   reusable:
-    # Depending on if the merge to main was a release merge, or a normal branch merge...
-    # it will either create a PR with a release candidate or create a github release object.
-    uses: zerapix/reusable-workflows/.github/workflows/py-merge-to-main-serverless-w-db.yml@test
-    with:
-      package-name: pixydocs_api
+    uses: zerapix/reusable-workflows/.github/workflows/py-create-release.yml@test
+    #if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged }}
     secrets: inherit
 ```
 
-On pull_request:
+Run Tests:
 
 ```yaml
 name: Run Tests
 on: pull_request
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@main
     secrets: inherit
-
-
 ```
 
 ## Optional SLS Deploy Features
 
+**Note: Don't use the optional SLS Deploy Script, instead run a script based on the serverless life events
+so deploying like normal manually will still work like expected.**
 
-Right before serverless/sls deploy, there is an option to run a sls-deploy-pre.sh
-script.
 
-If a script exists here in the local repo:
+~~Right before serverless/sls deploy, there is an option to run a sls-deploy-pre.sh
+script.~~
 
-`.github/hooks/sls-deploy-pre.sh`
+~~If a script exists here in the local repo:~~
 
-It will be executed with these environmental variables:
+~~`.github/hooks/sls-deploy-pre.sh`~~
 
-- `APP_ENV`: SLS Stage / Deployment Environment
-- `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY`: To execute/deploy things if needed in aws.
+~~It will be executed with these environmental variables:~~
+
+- ~~`APP_ENV`: SLS Stage / Deployment Environment~~
+- ~~`AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY`: To execute/deploy things if needed in aws.~~
 
