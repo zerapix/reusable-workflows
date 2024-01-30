@@ -6,6 +6,11 @@ runs:
     # TODO: Copy over the versionsrc-config file to the current root-directory
     - run: echo Running On Ref ${{ github.ref }}
       shell: bash
+
+    - run: echo Install Commit and Tag Version
+      shell: bash
+      run: npm install commit-and-tag-version
+
     - name: Increment, Tag and Commit for Release
       shell: bash
       run: |
