@@ -17,10 +17,10 @@
       "type": "json"
     }, {
       "filename": "pyproject.toml",
-      "updater": "./python-toml"
+      "updater": "./.reusable-workflows/versionsrc-config/python-toml"
     }, {
-      "filename": "release_creation_research/__init__.py",
-      "updater": "./python-init"
+      "filename": "release_testing_py/__init__.py",
+      "updater": "./.reusable-workflows/versionsrc-config/python-init"
     }
   ]
 }

@@ -32,6 +32,10 @@ runs:
         # fetch-depth 0 will check out all the commits and tags needed for release-bumper
         fetch-depth: ${{ inputs.fetch-depth }}
         token: ${{ steps.my-app.outputs.token }}
+    # When you use an action from a repo, github will do a local checkout of the repo
+    # to a specific location. Instead of checking out the repo twice, using sym-link to already
+    # checkout version (plus when building things, it's just a symlink and so hopefully avoids
+    # (accidentally included files from the reusable-workflows repo in the deployments).
     - name: Symlink Reusable Workflows
       shell: bash
       run: ln -s /home/runner/work/_actions/zerapix/reusable-workflows/${{ inputs.reusable-ref }} .reusable-workflows

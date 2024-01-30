@@ -9,7 +9,8 @@ runs:
 
     - run: npm install commit-and-tag-version
       shell: bash
-
+    - run: cp ./.reusable-workflows/versionsrc-config/python.versionrc.json .versionrc.json
+      shell: bash
     - name: Increment, Tag and Commit for Release
       shell: bash
       run: |
