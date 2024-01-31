@@ -30,7 +30,7 @@ runs:
         node-version: "20"
         cache: "yarn"
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
-      run: yarn install --frozen-lockfile
+      run: yarn install
       shell: bash
 
     - name: Check For Pre-Serverless Hook Script
