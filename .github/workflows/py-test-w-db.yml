@@ -13,10 +13,11 @@ jobs:
       POSTGRES_HOST: localhost
     steps:
       - uses: zerapix/reusable-workflows/all-checkout@z_v2
-      - name: Setup and Test Project
-        uses: ./.reusable-workflows/py-run-tests
+      - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+      - name: Setup and Test Project
+        uses: ./.reusable-workflows/py-run-tests
     services:
       postgres:
         image: postgres:14
