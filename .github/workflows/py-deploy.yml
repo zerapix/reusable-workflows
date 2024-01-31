@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: ./.reusable-workflows/py-setup-project
       - uses: ./.reusable-workflows/all-deploy-sls
         with:
           environment: ${{ inputs.environment }}
