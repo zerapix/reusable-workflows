@@ -23,6 +23,10 @@ runs:
     #----------------------------------------------
     # Install serverless framework and deploy
     #----------------------------------------------
+    - name: check for tag
+      if: ${{ github.ref_type != 'tag' }}
+      run: echo '::error ::Can Only Deploy Tags, Got ${{ github.ref_type }} instead!'
+      shell: bash
     - name: Setup Node.js
       id: setup_node
       uses: actions/setup-node@v4
