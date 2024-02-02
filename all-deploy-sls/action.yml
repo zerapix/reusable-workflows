@@ -26,7 +26,7 @@ runs:
     - name: check for tag
       if: ${{ github.ref_type != 'tag' }}
       run: |
-        echo '::error ::Can only deploy a tag, instead got ${{ github.ref_type }} ${{ github.ref_name }}!'
+        echo '::error ::Can only deploy a tag, instead was using ${{ github.ref_type }} ${{ github.ref_name }}!'
         exit 1
       shell: bash
     - name: Setup Node.js
