@@ -50,6 +50,6 @@ jobs:
             github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'deployment-auto.yml',
+              workflow_id: 'deploy-auto.yml',
               ref: 'refs/tags/${{ needs.create-release.outputs.created-release-tag-name }}',
             })

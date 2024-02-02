@@ -12,10 +12,13 @@ Right now we only have workflows for Python + Serverless deployments.
 
 The standard configuration in other Python/Serverless repos is this:
 
-On Deployment To Specific Environment Workflow:
+Deploy To User Selectable Environment:
 
 ```yaml
-name: Deploy to Environment
+# file: deploy.yml
+name: Deploy
+run-name: Deploy to ${{ inputs.environment }}
+concurrency: deployment-${{ inputs.environment }}
 on:
   workflow_dispatch:
     inputs:
@@ -24,32 +27,22 @@ on:
         type: environment
         default: dev
 
-      override-stage-name:
-        required: false
-        type: string
-        default: ''
-        description: >- 
-          Defaults to the environment name; use this if the stage is different;
-          like if its an account-wide "all" stage or Pull Request 'prs*' stage.
-
-concurrency: deployment-${{ inputs.environment }}
-
 jobs:
   reusable:
     uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@test
     secrets: inherit
     with:
       environment: ${{ inputs.environment }}
-      override-stage-name: ${{ inputs.override-stage-name }}
 ```
 
 Workflow that runs for automatically deploying just-created release:
 
 ```yaml
-name: Auto Deploy to dev
+# file: deploy-auto.yml
+name: Deploy Automatically
 on: workflow_dispatch
 concurrency: deployment-dev
-
+run-name: Auto deploy ${{ github.ref_name }} to dev
 jobs:
   deploy-dev:
     uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@test
@@ -61,28 +54,31 @@ jobs:
 Create Releases:
 
 ```yaml
-name: Create Release
+# file: release-create.yml
+name: Release Create
+run-name: Create release for pr ${{ github.event.number }}
 on:
   pull_request:
     types:
       - closed
     branches:
-          - main
+      - main
 jobs:
   reusable:
     uses: zerapix/reusable-workflows/.github/workflows/py-create-release.yml@test
-    #if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged }}
     secrets: inherit
 ```
 
 Run Tests:
 
 ```yaml
+# file: test.yml
 name: Run Tests
 on: pull_request
+run-name: Testing pr ${{ github.event.number }} for commit ${{ github.event.after }}
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@main
     secrets: inherit
 ```
 
