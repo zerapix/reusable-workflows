@@ -13,7 +13,6 @@ on:
         default: ''
         description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
 
-run-name: Deploy To ${{ inputs.environment }}
 concurrency: deploy-${{ inputs.environment }}
 
 jobs:
