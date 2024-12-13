@@ -24,7 +24,7 @@ concurrency: deploy-${{ inputs.environment }}
 jobs:
   deploy:
     environment: ${{ inputs.environment }}
-    runs-on: ${{ inputs.environment }}
+    runs-on: ${{ inputs.runs-on }}
     steps:
       - uses: zerapix/reusable-workflows/all-checkout@test
       - uses: ./.reusable-workflows/py-setup-project
