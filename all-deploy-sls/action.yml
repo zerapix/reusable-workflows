@@ -38,20 +38,6 @@ runs:
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       run: yarn install
       shell: bash
-
-    - name: Check For Pre-Serverless Hook Script
-      id: check_pre_serverless_hook_file
-      uses: andstor/file-existence-action@v2
-      with:
-        files: .github/hooks/sls-deploy-pre.sh
-    - name: Run Pre-Serverless Hook Script (**deprecated**, call extra scripts inside serverless file from now on)
-      if: steps.check_pre_serverless_hook_file.outputs.files_exists == 'true'
-      shell: bash
-      run: bash .github/hooks/sls-deploy-pre.sh
-      env:
-        APP_ENV: ${{ inputs.environment }}
-        AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
     - name: Set stage to use output
       shell: bash
       id: stage
