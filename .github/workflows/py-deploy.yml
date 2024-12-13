@@ -13,12 +13,18 @@ on:
         default: ''
         description: Defaults to the environment name; use this if the stage is different; like if its an account-wide "all" stage.
 
+      runs-on:
+        required: false
+        type: string
+        default: ubuntu-latest
+        description: Defaults to x64; specify to use a different runner.
+
 concurrency: deploy-${{ inputs.environment }}
 
 jobs:
   deploy:
     environment: ${{ inputs.environment }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.environment }}
     steps:
       - uses: zerapix/reusable-workflows/all-checkout@test
       - uses: ./.reusable-workflows/py-setup-project
