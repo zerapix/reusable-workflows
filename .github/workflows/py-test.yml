@@ -1,10 +1,16 @@
 # This workflow is used to run unit tests without a DB.
 on:
   workflow_call:
+    inputs:
+      runs-on:
+        required: false
+        type: string
+        default: ubuntu-latest
+        description: Defaults to x64; specify to use a different runner.
 name: Test
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     steps:
       - uses: zerapix/reusable-workflows/all-checkout@test
       - uses: ./.reusable-workflows/py-setup-project
