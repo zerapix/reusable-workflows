@@ -27,7 +27,7 @@ runs:
       id: setup_node
       uses: actions/setup-node@v3
       with:
-        node-version: "18"
+        node-version: "20"
         cache: "yarn"
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       run: yarn install --frozen-lockfile
