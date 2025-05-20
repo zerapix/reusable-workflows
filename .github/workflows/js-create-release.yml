@@ -14,6 +14,15 @@ on:
 concurrency: create-release
 run-name: Create Release + Auto Deploy by @${{ github.actor }}
 
+permissions:
+  # Full List @ https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#permissions
+  pull-requests: write  # Puts a tag on a PR to control slot to use
+  contents: write
+  actions: write
+  deployments: write
+  pages: write
+
+
 name: merge-to-main-release-please
 jobs:
   create-release:
