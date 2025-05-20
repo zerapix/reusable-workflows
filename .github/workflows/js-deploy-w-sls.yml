@@ -25,6 +25,11 @@ on:
 
 concurrency: deploy-${{ inputs.environment }}-${{ inputs.override-stage-name }}
 
+permissions:
+  # Full List @ https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#permissions
+  pull-requests: write  # Puts a tag on a PR to control slot to use
+  contents: read
+
 jobs:
   deploy:
     environment: ${{ inputs.environment }}
