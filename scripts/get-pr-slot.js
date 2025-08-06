@@ -1,4 +1,4 @@
-module.exports = ({github, context, devAppHost}) => {
+module.exports = ({github, context, devAppHost, devPdAppHost}) => {
     // let devAppHost = "pixydocs.dev.zerapix.com"
 
   // return context.payload.client_payload.value
@@ -134,7 +134,7 @@ module.exports = ({github, context, devAppHost}) => {
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `PR Will Deploy To https://${stageName}-${devAppHost}/`
+            body: `PR Will Deploy To https://${stageName}-${devAppHost}/ and https://${stageName}-${devPdAppHost}/`
         });
         allPromises.push(promise)
 
