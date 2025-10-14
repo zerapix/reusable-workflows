@@ -15,7 +15,7 @@ runs:
       run: pipx install poetry==2.2.1
     - name: Add Export Plugin for poetry
       shell: bash
-      run: poetry self add poetry-plugin-export
+      run: poetry self add poetry-plugin-export@1.9.0
     - name: Read Needed Python Version
       shell: bash
       run: |
