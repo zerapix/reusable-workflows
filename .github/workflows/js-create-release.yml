@@ -18,7 +18,7 @@ jobs:
     # If are already on a 'release' commit, we should skip this job.
     if: "!startsWith(github.event.head_commit.message, 'chore(release): ')"
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout-writable@test
+      - uses: zerapix/reusable-workflows/all-checkout-writable@z_v2
         with:
           zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
           zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
