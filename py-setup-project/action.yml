@@ -14,8 +14,10 @@ runs:
       shell: bash
       run: |
         if [ -f "uv.lock" ]; then
+          echo "Detected package manager: uv"
           echo "PKG_MANAGER=uv" >> "$GITHUB_ENV"
         else
+          echo "Detected package manager: poetry"
           echo "PKG_MANAGER=poetry" >> "$GITHUB_ENV"
         fi
 
