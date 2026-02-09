@@ -14,37 +14,21 @@ runs:
       shell: bash
       run: |
         if [ -f "uv.lock" ]; then
-          echo "Detected package manager: uv (ver 0.5)"
+          echo "Detected package manager: uv (ver 0.6)"
           echo "PKG_MANAGER=uv" >> "$GITHUB_ENV"
         else
           echo "Detected package manager: poetry"
           echo "PKG_MANAGER=poetry" >> "$GITHUB_ENV"
         fi
 
-    - name: Debug - List directory structure
-      shell: bash
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Contents of current directory:"
-        ls -la
-        echo "Contents of py-setup-project:"
-        ls -la py-setup-project/ || echo "py-setup-project/ not found"
-        echo "Contents of py-setup-project/uv:"
-        ls -la py-setup-project/uv/ || echo "py-setup-project/uv/ not found"
-        echo "Contents of py-setup-project/poetry:"
-        ls -la py-setup-project/poetry/ || echo "py-setup-project/poetry/ not found"
-        echo "Full tree (if available):"
-        tree -L 3 || find . -maxdepth 3 -type f -name "action.y*ml"
-        echo "GITHUB_ACTION_PATH=GITHUB_ACTION_PATH"
-
     - name: Setup with Poetry
       if: env.PKG_MANAGER == 'poetry'
-      uses: ./${{ env.GITHUB_ACTION_PATH }}/poetry
+      uses: ./.reusable-workflows/py-setup-project/poetry
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
 
     - name: Setup with UV
       if: env.PKG_MANAGER == 'uv'
-      uses: ./${{ env.GITHUB_ACTION_PATH }}/uv
+      uses: ./.reusable-workflows/py-setup-project/uv
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
