@@ -29,5 +29,5 @@ runs:
         GEMFURY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
       run: |
         test -f uv.lock
-        uv auth login --username NOPASS --password ${{ inputs.GEMFURY_DEPLOY_TOKEN }}https://pypi.fury.io/zerapix/
+        uv auth login --username NOPASS --password ${{ inputs.GEMFURY_DEPLOY_TOKEN }} https://pypi.fury.io/zerapix/
         uv sync --frozen --no-dev
