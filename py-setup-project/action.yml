@@ -23,12 +23,12 @@ runs:
 
     - name: Setup with Poetry
       if: env.PKG_MANAGER == 'poetry'
-      uses: ./py-setup-project/poetry
+      uses: ./py-setup-project/poetry@test-uv
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
 
     - name: Setup with UV
       if: env.PKG_MANAGER == 'uv'
-      uses: ./py-setup-project/uv
+      uses: ./py-setup-project/uv@test-uv
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
