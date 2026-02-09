@@ -14,7 +14,7 @@ runs:
       shell: bash
       run: |
         if [ -f "uv.lock" ]; then
-          echo "Detected package manager: uv (ver 0.2)"
+          echo "Detected package manager: uv (ver 0.3)"
           echo "PKG_MANAGER=uv" >> "$GITHUB_ENV"
         else
           echo "Detected package manager: poetry"
@@ -23,12 +23,12 @@ runs:
 
     - name: Setup with Poetry
       if: env.PKG_MANAGER == 'poetry'
-      uses: ./poetry
+      uses: ./py-setup-project/poetry
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
 
     - name: Setup with UV
       if: env.PKG_MANAGER == 'uv'
-      uses: ./uv
+      uses: ./py-setup-project/uv
       with:
         GEMFURY_DEPLOY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
