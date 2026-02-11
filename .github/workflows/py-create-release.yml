@@ -16,7 +16,7 @@ jobs:
   test-with-db-if-needed:
     name: Test With DB If Needed
     if: ${{ inputs.need-testing-db }}
-    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@z_v2
+    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@test-uv
     secrets: inherit
 
   create-release:
