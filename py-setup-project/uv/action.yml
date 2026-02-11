@@ -21,7 +21,7 @@ runs:
     - name: Install uv
       uses: astral-sh/setup-uv@v5
       with:
-        version: 0.9.26
+        version: 0.10.2
 
     - name: Sync dependencies (frozen lockfile)
       shell: bash
@@ -29,5 +29,5 @@ runs:
         GEMFURY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
       run: |
         test -f uv.lock
-        uv auth login --username ${{ inputs.GEMFURY_DEPLOY_TOKEN }} --password NOPASS https://pypi.fury.io/zerapix/
+        uv auth login --username ${{ inputs.GEMFURY_DEPLOY_TOKEN }} --password NOPASS https://pypi.fury.io/zerapix
         uv sync --frozen --no-dev
