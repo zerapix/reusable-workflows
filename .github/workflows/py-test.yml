@@ -12,10 +12,7 @@ jobs:
   test:
     runs-on: ${{ inputs.runs-on }}
     steps:
-      - name: Debug Info
-        run: echo "Inside test uv branch"
-
-      - uses: zerapix/reusable-workflows/all-checkout@test-uv
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
       - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
