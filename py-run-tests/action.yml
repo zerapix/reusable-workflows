@@ -3,11 +3,12 @@ description: 'Reusable action to run unit tests in uv or poetry environments.'
 runs:
   using: "composite"
   steps:
-    - name: Run tests
+    - name: Run tests with Poetry
+      if: env.PKG_MANAGER == 'poetry'
       shell: bash
-      run: |
-        if [ -f "uv.lock" ]; then
-          uv run pytest
-        else
-          poetry run pytest
-        fi
+      run: poetry run pytest
+
+    - name: Run tests with UV
+      if: env.PKG_MANAGER == 'uv'
+      shell: bash
+      run: uv run pytest
