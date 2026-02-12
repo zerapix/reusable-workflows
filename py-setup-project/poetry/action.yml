@@ -1,0 +1,44 @@
+name: 'Setup Python, Poetry and Project Deps'
+description: 'Reusable action to setup python, poetry and project dependencies in a standard way.'
+inputs:
+  GEMFURY_DEPLOY_TOKEN:
+    description: Gemfury Deploy Token
+    required: true
+runs:
+  using: "composite"
+  steps:
+    #----------------------------------------------
+    #       Set-up python + poetry
+    #----------------------------------------------
+    - name: Install poetry
+      shell: bash
+      run: pipx install poetry==2.2.1
+    - name: Add Export Plugin for poetry
+      shell: bash
+      run: poetry self add poetry-plugin-export@1.9.0
+    - name: Read Needed Python Version
+      shell: bash
+      run: |
+        PY_VER=$(sed -n 's/^ *python *= *"[~^]*\([0-9\.]*\)"/\1/p' pyproject.toml)
+        echo "PY_VERSION=$PY_VER" >> $GITHUB_ENV
+    - name: Setup Python v${{ env.PY_VERSION }}
+      id: setup-python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PY_VERSION }}
+        cache: poetry
+    #----------------------------------------------
+    #         Install dependencies + self
+    #----------------------------------------------
+    - name: Inform Poetry of Python Version To Use
+      shell: bash
+      run: poetry env use ${{ env.PY_VERSION }}
+    - name: Install Dependencies
+      shell: bash
+      run: poetry config http-basic.fury ${{inputs.GEMFURY_DEPLOY_TOKEN}} NOPASS
+    - name: Install Dependencies
+      shell: bash
+      run: poetry install --no-interaction --no-root
+    - name: Install Self
+      shell: bash
+      run: poetry install --no-interaction

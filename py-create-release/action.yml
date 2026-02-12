@@ -7,16 +7,18 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Install tomlkit
-      # Ensure tomlkit is installed, so I can retrieve package info on next step.
-      # In Python 3.11, there is now a built-in `tomllib` library we can use.
-      # Once everything is on Python 3.11, we can change this code to use `tomllib` instead.
-      shell: bash
-      run: poetry run pip install tomlkit
-    - name: Retrieve Project Package via tomlkit
+    - name: Retrieve Project Package via tomllib with Poetry
+      if: env.PKG_MANAGER == 'poetry'
       shell: bash
       run: |
-        PY_OUTPUT=$(poetry run -q python -c "import tomlkit; import pathlib; print(tomlkit.parse(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
+        PY_OUTPUT=$(poetry run -q python -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
+        echo "PY_Z_MODULE=$PY_OUTPUT" | tr - _ >> $GITHUB_ENV
+
+    - name: Retrieve Project Package via tomllib with UV
+      if: env.PKG_MANAGER == 'uv'
+      shell: bash
+      run: |
+        PY_OUTPUT=$(uv run -q python -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['tool']['uv']['build-backend']['module-name'][0], end='')")
         echo "PY_Z_MODULE=$PY_OUTPUT" | tr - _ >> $GITHUB_ENV
 
     - name: Copy + Configure .versionrc.json File...
@@ -28,4 +30,3 @@ runs:
         PY_Z_MODULE: ${{ env.PY_Z_MODULE }}
     - uses: ./.reusable-workflows/all-commit-and-tag-release
       id: release
-

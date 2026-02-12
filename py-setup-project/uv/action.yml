@@ -1,0 +1,33 @@
+name: 'Setup Python with UV'
+description: 'Setup python, uv and project dependencies using uv sync --frozen.'
+inputs:
+  GEMFURY_DEPLOY_TOKEN:
+    description: Gemfury Deploy Token
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Read Needed Python Version
+      shell: bash
+      run: |
+        PY_VER=$(sed -n 's/^ *requires-python *= *"==\([0-9]*\.[0-9]*\).*/\1/p' pyproject.toml)
+        echo "PY_VERSION=$PY_VER" >> "$GITHUB_ENV"
+
+    - name: Setup Python v${{ env.PY_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PY_VERSION }}
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: 0.10.2
+
+    - name: Sync dependencies (frozen lockfile)
+      shell: bash
+      env:
+        GEMFURY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
+      run: |
+        test -f uv.lock
+        uv auth login --username ${{ inputs.GEMFURY_DEPLOY_TOKEN }} --password NOPASS https://pypi.fury.io/zerapix
+        uv sync --frozen --no-dev
