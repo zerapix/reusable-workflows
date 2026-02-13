@@ -66,7 +66,6 @@ runs:
       # look into environment feature of github actions/workflows.
       run: |
         yarn sls deploy --verbose --stage ${{ steps.stage.outputs.value }} --force
-        yarn sls doctor
       shell: bash
       env:
         # todo: checkout what we can do with `SERVERLESS_ACCESS_KEY`:
