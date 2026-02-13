@@ -22,11 +22,7 @@ runs:
       if: env.PKG_MANAGER == 'uv'
       shell: bash
       run: uv build
-    - name: Activate Virtual Environment, Install twine and Publish to Gemfury with UV
+    - name: Publish to Gemfury with UV
       if: env.PKG_MANAGER == 'uv'
       shell: bash
-      run: |
-        uv venv --clear
-        source .venv/bin/activate
-        uv pip install twine
-        twine upload dist/* --repository-url https://push.fury.io/zerapix -u ${{inputs.GEMFURY_PUBLISH_TOKEN}} -p NOPASS --verbose
+      run: uv publish --publish-url https://push.fury.io/zerapix --username ${{inputs.GEMFURY_PUBLISH_TOKEN}} -password NOPASS dist/*
