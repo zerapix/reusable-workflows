@@ -22,7 +22,7 @@ runs:
       if: env.PKG_MANAGER == 'uv'
       shell: bash
       run: uv build
-    - name: Activate Virtual Environment, Install twinePublish to Gemfury with UV
+    - name: Activate Virtual Environment, Install twine and Publish to Gemfury with UV
       if: env.PKG_MANAGER == 'uv'
       shell: bash
       run: |
