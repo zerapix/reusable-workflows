@@ -18,20 +18,15 @@ runs:
         poetry config http-basic.fury ${{inputs.GEMFURY_PUBLISH_TOKEN}} NOPASS
         poetry publish -r fury
 
-    - name: Activate Virtual Environment and Install twine
+    - name: Build Library with UV
+      if: env.PKG_MANAGER == 'uv'
+      shell: bash
+      run: uv build
+    - name: Activate Virtual Environment, Install twinePublish to Gemfury with UV
       if: env.PKG_MANAGER == 'uv'
       shell: bash
       run: |
         uv venv --clear
         source .venv/bin/activate
-        uv pip install twine
-    - name: Build Library with UV
-      if: env.PKG_MANAGER == 'uv'
-      shell: bash
-      run: uv build
-    - name: Publish to Gemfury with UV
-      if: env.PKG_MANAGER == 'uv'
-      shell: bash
-      run: |
         uv pip install twine
         twine upload dist/* --repository-url https://push.fury.io/zerapix -u ${{inputs.GEMFURY_PUBLISH_TOKEN}} -p NOPASS
