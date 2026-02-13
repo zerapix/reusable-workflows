@@ -1,5 +1,5 @@
-name: Deploy Python via Serverless
-description: Reusable action to deploy Python via the Serverless Framework.
+name: Publish to Gemfury
+description: Build and publish Python Library to Gemfury with UV or Poetry
 inputs:
   GEMFURY_PUBLISH_TOKEN:
     description: Gemfury Publish Token
@@ -7,11 +7,31 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Build Library
+    - name: Build Library with Poetry
+      if: env.PKG_MANAGER == 'poetry'
       shell: bash
       run: poetry build
-    - name: Publish to Gemfury
+    - name: Publish to Gemfury with Poetry
+      if: env.PKG_MANAGER == 'poetry'
       shell: bash
       run: |
         poetry config http-basic.fury ${{inputs.GEMFURY_PUBLISH_TOKEN}} NOPASS
         poetry publish -r fury
+
+    - name: Activate Virtual Environment and Install twine
+      if: env.PKG_MANAGER == 'uv'
+      shell: bash
+      run: |
+        uv venv --clear
+        source .venv/bin/activate
+        uv pip install twine
+    - name: Build Library with UV
+      if: env.PKG_MANAGER == 'uv'
+      shell: bash
+      run: uv build
+    - name: Publish to Gemfury with UV
+      if: env.PKG_MANAGER == 'uv'
+      shell: bash
+      run: |
+        uv pip install twine
+        twine upload dist/* --repository-url https://push.fury.io/zerapix -u ${{inputs.GEMFURY_PUBLISH_TOKEN}} -p NOPASS
