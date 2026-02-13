@@ -29,4 +29,4 @@ runs:
         uv venv --clear
         source .venv/bin/activate
         uv pip install twine
-        twine upload dist/* --repository-url https://push.fury.io/zerapix -u ${{inputs.GEMFURY_PUBLISH_TOKEN}} -p NOPASS
+        twine upload dist/* --repository-url https://push.fury.io/zerapix -u ${{inputs.GEMFURY_PUBLISH_TOKEN}} -p NOPASS --verbose
