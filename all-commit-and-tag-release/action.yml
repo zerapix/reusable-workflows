@@ -13,6 +13,7 @@ runs:
 
     # Just to be sure the lock-file is in good shape + ensure that `commit-and-tag-version` is installed.
     - run: yarn install
+      shell: bash
     - run: yarn add commit-and-tag-version
       shell: bash
 
