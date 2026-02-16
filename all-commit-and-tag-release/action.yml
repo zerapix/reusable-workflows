@@ -11,7 +11,9 @@ runs:
     - run: echo Running On Ref ${{ github.ref }}
       shell: bash
 
-    - run: npm install commit-and-tag-version
+    # Just to be sure the lock-file is in good shape + ensure that `commit-and-tag-version` is installed.
+    - run: yarn install
+    - run: yarn add commit-and-tag-version
       shell: bash
 
     - name: Increment, Tag and Commit for Release
