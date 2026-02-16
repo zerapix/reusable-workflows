@@ -18,7 +18,7 @@ runs:
       if: env.PKG_MANAGER == 'uv'
       shell: bash
       run: |
-        PY_OUTPUT=$(uv run -q python -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['tool']['uv']['build-backend']['module-name'][0], end='')")
+        PY_OUTPUT=$(uv run -q python -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['name'], end='')")
         echo "PY_Z_MODULE=$PY_OUTPUT" | tr - _ >> $GITHUB_ENV
 
     - name: Copy + Configure .versionrc.json File...
