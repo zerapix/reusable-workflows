@@ -31,3 +31,4 @@ runs:
         test -f uv.lock
         uv auth login --username ${{ inputs.GEMFURY_DEPLOY_TOKEN }} --password NOPASS https://pypi.fury.io/zerapix
         uv sync --frozen --no-dev
+        uv tool install --force --index=https://pypi.fury.io/zerapix zp
