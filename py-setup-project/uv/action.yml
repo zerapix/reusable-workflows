@@ -23,12 +23,18 @@ runs:
       with:
         version: 0.10.2
 
-    - name: Sync dependencies (frozen lockfile)
-      shell: bash
+    - name: Login to GemFury
       env:
         GEMFURY_TOKEN: ${{ inputs.GEMFURY_DEPLOY_TOKEN }}
-      run: |
-        test -f uv.lock
-        uv auth login --username ${{ inputs.GEMFURY_DEPLOY_TOKEN }} --password NOPASS https://pypi.fury.io/zerapix
-        uv sync --frozen --no-dev
-        uv tool install --force --index=https://pypi.fury.io/zerapix zp
+      run: uv auth login --username ${{ inputs.GEMFURY_DEPLOY_TOKEN }} --password NOPASS https://pypi.fury.io/zerapix
+
+    - name: Install ZP
+      run: uv tool install --force --index=https://pypi.fury.io/zerapix zp@1.17.2
+
+    - name: Log ZP Version
+      run: zp --version
+
+    - name: Install UV Dependencies
+      run: uv sync --frozen --no-dev
+
+
