@@ -8,7 +8,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: zerapix/reusable-workflows/all-checkout@test
       - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
