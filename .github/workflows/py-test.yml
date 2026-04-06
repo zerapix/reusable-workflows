@@ -7,12 +7,18 @@ on:
         type: string
         default: ubuntu-latest
         description: Defaults to x64; specify to use a different runner.
+defaults:
+  run:
+    shell: bash
 name: Test
 jobs:
   test:
     runs-on: ${{ inputs.runs-on }}
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: zerapix/reusable-workflows/all-checkout@test
       - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
@@ -20,5 +26,5 @@ jobs:
         uses: ./.reusable-workflows/py-run-tests
 
   analyze:
-    uses: zerapix/reusable-workflows/.github/workflows/py-analyze.yml@z_v2
+    uses: zerapix/reusable-workflows/.github/workflows/py-analyze.yml@test
     secrets: inherit
