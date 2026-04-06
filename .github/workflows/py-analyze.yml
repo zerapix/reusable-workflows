@@ -4,6 +4,9 @@ on:
 
 name: Analyze Python Code
 run-name: Analyze Python Code for @${{ github.actor }}
+defaults:
+  run:
+    shell: bash
 
 jobs:
   analyze:

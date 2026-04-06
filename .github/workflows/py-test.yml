@@ -7,6 +7,10 @@ on:
         type: string
         default: ubuntu-latest
         description: Defaults to x64; specify to use a different runner.
+defaults:
+  run:
+    shell: bash
+
 name: Test
 jobs:
   test:

@@ -3,6 +3,12 @@ on:
   workflow_call:
 name: merge-to-main-release-please
 concurrency: publish
+defaults:
+  run:
+    shell: bash
+defaults:
+  run:
+    shell: bash
 
 jobs:
   publish:
