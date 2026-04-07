@@ -6,10 +6,6 @@ concurrency: publish
 defaults:
   run:
     shell: bash
-defaults:
-  run:
-    shell: bash
-
 jobs:
   publish:
     runs-on: ubuntu-latest
