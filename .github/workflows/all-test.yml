@@ -49,7 +49,6 @@ jobs:
       - run: echo "Assigned PR Slot (${{ steps.slot-num.outputs.result }})."
 
   js-test:
-    runs-on: ${{ inputs.runs-on }}
     if: ${{ always() && inputs.lang == 'js' }}
     needs: get-prs-slot
     secrets: inherit
@@ -58,6 +57,7 @@ jobs:
       environment: 'prs'
       override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
       pre-release: true
+      runs-on: ${{ inputs.runs-on }}
 
   py-test:
     runs-on: ${{ inputs.runs-on }}
