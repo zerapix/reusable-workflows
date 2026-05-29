@@ -52,7 +52,7 @@ jobs:
     if: ${{ always() && inputs.lang == 'js' }}
     needs: get-prs-slot
     secrets: inherit
-    uses: ./.reusable-workflows/.github/workflows/all-deploy.yml
+    uses: zerapix/reusable-workflows/.github/workflows/all-deploy.yml@test
     with:
       environment: 'prs'
       override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
