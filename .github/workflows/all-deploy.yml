@@ -41,7 +41,7 @@ jobs:
       - uses: zerapix/reusable-workflows/all-checkout@test
 
       - uses: ./.reusable-workflows/js-setup-project
-        if: ${{ lang == 'js' }}
+        if: ${{ inputs.lang == 'js' }}
 
       - uses: ./.reusable-workflows/py-setup-project
         with:
