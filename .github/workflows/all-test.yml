@@ -33,13 +33,13 @@ jobs:
       - name: Deploying PR ${{ github.event.number }}
         run: echo Attached To PR ${{ github.event.number }}
         shell: bash
-#      # When you use an action from a repo, github will do a local checkout of the repo
-#      # to a specific location. Instead of checking out the repo twice, using sym-link to already
-#      # checkout version (plus when building things, it's just a symlink and so hopefully avoids
-#      # (accidentally included files from the reusable-workflows repo in the deployments).
-#      - name: Symlink Reusable Workflows
-#        shell: bash
-#        run: ln -s ${{ github.action_path }}/.. .reusable-workflows
+      # When you use an action from a repo, github will do a local checkout of the repo
+      # to a specific location. Instead of checking out the repo twice, using sym-link to already
+      # checkout version (plus when building things, it's just a symlink and so hopefully avoids
+      # (accidentally included files from the reusable-workflows repo in the deployments).
+      - name: Symlink Reusable Workflows
+        shell: bash
+        run: ln -s ${{ github.action_path }}/.. .reusable-workflows
 
 #      - uses: zerapix/reusable-workflows/all-checkout@test
       # # These seem unneeded, we just need the slot-number,
@@ -52,7 +52,7 @@ jobs:
         id: slot-num
         with:  # "pixydocs.dev.zerapix.com"
           script: |
-            const script = require('${{ github.action_path }}/../scripts/get-pr-slot.js')
+            const script = require('./.reusable-workflows/scripts/get-pr-slot.js')
             const devAppHost = '${{ inputs.dev-app-host }}'
             return script({github, context, devAppHost})
       - run: echo "Assigned PR Slot (${{ steps.slot-num.outputs.result }})."
