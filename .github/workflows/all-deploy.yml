@@ -27,6 +27,7 @@ on:
       lang:
         type: string
         description: Main project language, currently either `py` or `js`.
+        required: true
 defaults:
   run:
     shell: bash
