@@ -7,19 +7,23 @@ on:
         description: Host name to link to (will prepend 'prs*' to start of host).
         required: true
 
-concurrency: deploy-pr-${{ github.event.number }}
 name: Deploy PR
-
 jobs:
   get-prs-slot:
+    # We want the prs slot number finder/getter to one run one at a time.
+    concurrency: get-prs-slot
     runs-on: ubuntu-latest
     outputs:
       slot-num: ${{ steps.slot-num.outputs.result }}
     steps:
       - name: Deploying PR ${{ github.event.number }}
         run: echo Attached To PR ${{ github.event.number }}
-      - uses: zerapix/reusable-workflows/all-checkout@z_v2
-      - uses: ./.reusable-workflows/js-setup-project
+        shell: bash
+
+      # # These seem unneeded, we just need the slot-number,
+      # # and we want that to go as fast as possible.
+      # - uses: zerapix/reusable-workflows/all-checkout@test
+      # - uses: ./.reusable-workflows/js-setup-project
 
       # Get/Assign the prs* stage name for pr.
       - uses: actions/github-script@v7

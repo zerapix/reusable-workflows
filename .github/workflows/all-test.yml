@@ -1,0 +1,79 @@
+# This workflow is used to run unit tests without a DB.
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        required: false
+        type: string
+        default: ubuntu-latest
+        description: Defaults to x64; specify to use a different runner.
+      dev-app-host:
+        type: string
+        description: Host name to link to (will prepend 'prs*' to start of host).
+        required: false
+        default: ''
+      lang:
+        type: string
+        description: Main project language, currently either `py` or `js`.
+defaults:
+  run:
+    shell: bash
+name: Test
+
+jobs:
+  get-prs-slot:
+    # We want the prs slot number finder/getter to one run one at a time.
+    runs-on: ${{ inputs.runs-on }}
+    concurrency: get-prs-slot
+    if: ${{ lang == 'js' }}
+    outputs:
+      slot-num: ${{ steps.slot-num.outputs.result }}
+    steps:
+      - name: Deploying PR ${{ github.event.number }}
+        run: echo Attached To PR ${{ github.event.number }}
+        shell: bash
+
+      # # These seem unneeded, we just need the slot-number,
+      # # and we want that to go as fast as possible.
+      # - uses: zerapix/reusable-workflows/all-checkout@test
+      # - uses: ./.reusable-workflows/js-setup-project
+
+      # Get/Assign the prs* stage name for pr.
+      - uses: actions/github-script@v7
+        id: slot-num
+        with:  # "pixydocs.dev.zerapix.com"
+          script: |
+            const script = require('./.reusable-workflows/scripts/get-pr-slot.js')
+            const devAppHost = '${{ inputs.dev-app-host }}'
+            return script({github, context, devAppHost})
+      - run: echo "Assigned PR Slot (${{ steps.slot-num.outputs.result }})."
+
+  js-test:
+    runs-on: ${{ inputs.runs-on }}
+    if: ${{ always() && lang == 'js' }}
+    needs: get-prs-slot
+    secrets: inherit
+    uses: ./.reusable-workflows/.github/workflows/all-deploy.yml
+    with:
+      environment: 'prs'
+      override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
+      pre-release: true
+
+  py-test:
+    runs-on: ${{ inputs.runs-on }}
+    if: ${{ always() && lang == 'py' }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: zerapix/reusable-workflows/all-checkout@test
+      - uses: ./.reusable-workflows/py-setup-project
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+      - name: Setup and Test Project
+        uses: ./.reusable-workflows/py-run-tests
+
+#  # We now automatically analyze code for any PR that targets the main branch; so this is duplicative now.
+#  analyze:
+#    uses: zerapix/reusable-workflows/.github/workflows/py-analyze.yml@test
+#    secrets: inherit

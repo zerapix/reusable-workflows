@@ -1,0 +1,49 @@
+# Normally called on pull_request events
+on:
+  workflow_call:
+    inputs:
+      dev-app-host:
+        type: string
+        description: Host name to link to (will prepend 'prs*' to start of host).
+        required: true
+
+    lang:
+      type: string
+      description: Main project language, currently either `py` or `js`.
+
+name: Deploy PR
+jobs:
+  get-prs-slot:
+    # We want the prs slot number finder/getter to one run one at a time.
+    concurrency: get-prs-slot
+    runs-on: ubuntu-latest
+    outputs:
+      slot-num: ${{ steps.slot-num.outputs.result }}
+    steps:
+      - name: Deploying PR ${{ github.event.number }}
+        run: echo Attached To PR ${{ github.event.number }}
+        shell: bash
+
+      # # These seem unneeded, we just need the slot-number,
+      # # and we want that to go as fast as possible.
+      # - uses: zerapix/reusable-workflows/all-checkout@test
+      # - uses: ./.reusable-workflows/js-setup-project
+
+      # Get/Assign the prs* stage name for pr.
+      - uses: actions/github-script@v7
+        id: slot-num
+        with:  # "pixydocs.dev.zerapix.com"
+          script: |
+            const script = require('./.reusable-workflows/scripts/get-pr-slot.js')
+            const devAppHost = '${{ inputs.dev-app-host }}'
+            return script({github, context, devAppHost})
+      - run: echo "Assigned PR Slot (${{ steps.slot-num.outputs.result }})."
+
+  deploy-prs:
+    needs: get-prs-slot
+    uses: ./.reusable-workflows/.github/workflows/js-deploy-w-sls.yml
+    secrets: inherit
+    with:
+      environment: 'prs'
+      override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
+      pre-release: true
