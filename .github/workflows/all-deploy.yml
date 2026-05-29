@@ -45,6 +45,7 @@ jobs:
         if: ${{ inputs.lang == 'js' }}
 
       - uses: ./.reusable-workflows/py-setup-project
+        if: ${{ inputs.lang == 'py' }}
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
 
