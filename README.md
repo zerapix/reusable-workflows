@@ -29,7 +29,7 @@ on:
 
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@z_v2
     secrets: inherit
     with:
       environment: ${{ inputs.environment }}
@@ -45,7 +45,7 @@ concurrency: deployment-dev
 run-name: Auto deploy ${{ github.ref_name }} to dev
 jobs:
   deploy-dev:
-    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-deploy.yml@z_v2
     secrets: inherit
     with:
       environment: dev
@@ -65,7 +65,7 @@ on:
       - main
 jobs:
   reusable:
-    uses: zerapix/reusable-workflows/.github/workflows/py-create-release.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/py-create-release.yml@z_v2
     secrets: inherit
 ```
 
