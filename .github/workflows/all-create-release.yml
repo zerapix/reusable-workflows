@@ -66,10 +66,9 @@ jobs:
         if: ${{ inputs.lang == 'js' }}
         name: js - Setup Project
 
-      - name: Copy .versionrc.json File...
+      - name: js - Copy Proper `.version.json` config file.
         if: ${{ inputs.lang == 'js' }}
         shell: bash
-        name: js - Copy Proper `.version.json` config file.
         run: cp .reusable-workflows/versionsrc-config/javascript.versionrc.json .versionrc.json
 
       - uses: ./.reusable-workflows/all-commit-and-tag-release
