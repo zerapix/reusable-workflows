@@ -16,6 +16,10 @@ on:
         type: string
         description: Main project language, currently either `py` or `js`.
         required: true
+      need-testing-db:
+        type: boolean
+        default: false
+        description: If DB service is needed for testing.
 defaults:
   run:
     shell: bash
@@ -71,7 +75,7 @@ jobs:
 
   py-test:
     runs-on: ${{ inputs.runs-on }}
-    if: ${{ inputs.lang == 'py' }}
+    if: ${{ inputs.lang == 'py' && !inputs.need-testing-db }}
     defaults:
       run:
         shell: bash
@@ -82,6 +86,37 @@ jobs:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
       - name: Setup and Test Project
         uses: ./.reusable-workflows/py-run-tests
+
+  py-test-w-db:
+    runs-on: ${{ inputs.runs-on }}
+    if: ${{ inputs.lang == 'py' && inputs.need-testing-db }}
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg-pass
+      POSTGRES_DB: unitTestingDB-unit
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: localhost
+    steps:
+      - uses: zerapix/reusable-workflows/all-checkout@test
+      - uses: ./.reusable-workflows/py-setup-project
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+      - name: Setup and Test Project
+        uses: ./.reusable-workflows/py-run-tests
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: pg-pass
+          POSTGRES_DB: pixyDocsApi-unknown
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+        - 15432:5432
 
 #  # We now automatically analyze code for any PR that targets the main branch; so this is duplicative now.
 #  analyze:

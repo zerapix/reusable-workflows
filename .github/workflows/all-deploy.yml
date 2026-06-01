@@ -3,9 +3,15 @@ on:
   workflow_call:
     inputs:
       environment:
+        required: true
         type: string
         default: dev
         description: Environment to deploy in.
+
+      lang:
+        required: true
+        type: string
+        description: Main project language, currently either `py` or `js`.
 
       override-stage-name:
         required: false
@@ -20,14 +26,11 @@ on:
         description: Defaults to x64; specify to use a different runner.
 
       pre-release:
+        required: false
         type: boolean
         default: false
         description: Set to true if you want to set a pre-release version for deployment.
 
-      lang:
-        type: string
-        description: Main project language, currently either `py` or `js`.
-        required: true
 defaults:
   run:
     shell: bash
