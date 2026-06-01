@@ -11,6 +11,5 @@ jobs:
     uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@test
     secrets: inherit
     with:
-      runs-on: ${{ inputs.runs-on }}
       need-testing-db: true
       lang: py
