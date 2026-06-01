@@ -11,19 +11,26 @@ on:
         type: string
         description: Main project language, currently either `py` or `js`.
         required: true
+
+      # TODO: Will probably/eventually want a 'runs-on` input here, to support arm64 for django projects, etc
+      # TODO: (when we eventually want to do that).
+
 defaults:
   run:
     shell: bash
 
 concurrency: create-release
 run-name: Create Release + Auto Deploy by @${{ github.actor }}
-
-name: Create Release (All)
+name: Create Release
 jobs:
   test-with-db-if-needed:
     name: Test With DB If Needed
     if: ${{ inputs.lang == 'py' && inputs.need-testing-db }}
-    uses: zerapix/reusable-workflows/.github/workflows/py-test-w-db.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@test
+    with:
+      # TODO: May want to pass in here that we SHOULD NOT do a slot-deploy.
+      # TODO: For now, we know that 'py' projects don't need/do that; so that is enough for now.
+      need-testing-db: true
     secrets: inherit
 
   create-release:

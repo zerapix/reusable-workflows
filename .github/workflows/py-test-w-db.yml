@@ -5,7 +5,8 @@ name: Test w/DB
 defaults:
   run:
     shell: bash
-
+run-name: Testing pr ${{ github.event.number }} (w/db) for commit ${{ github.event.after || '*first*' }}
+name: Run Tests
 jobs:
   redirect:
     uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@test

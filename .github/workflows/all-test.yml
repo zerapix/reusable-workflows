@@ -23,8 +23,8 @@ on:
 defaults:
   run:
     shell: bash
-name: Test
-
+run-name: Testing pr ${{ github.event.number }} for commit ${{ github.event.after || '*first*' }}
+name: Run Tests
 jobs:
   get-prs-slot:
     # We want the prs slot number finder/getter to one run one at a time.

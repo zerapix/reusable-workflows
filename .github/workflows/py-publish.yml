@@ -1,7 +1,7 @@
 # Normally called when a merge to the main branch happens.
 on:
   workflow_call:
-name: merge-to-main-release-please
+name: Publish Python Lib
 concurrency: publish
 defaults:
   run:
