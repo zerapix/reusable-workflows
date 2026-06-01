@@ -33,7 +33,7 @@ jobs:
     # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
     if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
     outputs:
-      created-release-tag-name: ${{ steps.release.outputs.created-release-tag-name }}
+      created-release-tag-name: ${{ case(inputs.lang == 'js', steps.release-js.outputs.created-release-tag-name, steps.release-py.outputs.created-release-tag-name)  }}
     steps:
       - uses: zerapix/reusable-workflows/all-checkout-writable@test
         with:
@@ -56,7 +56,7 @@ jobs:
       - uses: ./.reusable-workflows/py-create-release
         if: ${{ inputs.lang == 'py' }}
         name: Python - Create Release
-        id: release
+        id: release-py
 
 
       # **********************************************************
@@ -74,7 +74,7 @@ jobs:
       - uses: ./.reusable-workflows/all-commit-and-tag-release
         if: ${{ inputs.lang == 'js' }}
         name: js - Commit, Tag and Deploy Release
-        id: release
+        id: release-js
 
   # Create Separate Job, to distinguish release-creation from deployment
   # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
