@@ -45,10 +45,10 @@ jobs:
 #        shell: bash
 #        run: ln -s ${{ github.action_path }}/.. .reusable-workflows
 
-      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: zerapix/reusable-workflows/all-checkout@test
       # # These seem unneeded, we just need the slot-number,
       # # and we want that to go as fast as possible.
-      # - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      # - uses: zerapix/reusable-workflows/all-checkout@test
       # - uses: ./.reusable-workflows/js-setup-project
 
       # Get/Assign the prs* stage name for pr.
@@ -65,7 +65,7 @@ jobs:
     if: ${{ inputs.lang == 'js' }}
     needs: get-prs-slot
     secrets: inherit
-    uses: zerapix/reusable-workflows/.github/workflows/all-deploy.yml@z_v2
+    uses: zerapix/reusable-workflows/.github/workflows/all-deploy.yml@test
     with:
       environment: 'prs'
       override-stage-name: 'prs${{ needs.get-prs-slot.outputs.slot-num }}'
@@ -80,7 +80,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: zerapix/reusable-workflows/all-checkout@test
       - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
@@ -97,7 +97,7 @@ jobs:
       POSTGRES_PORT: 5432
       POSTGRES_HOST: localhost
     steps:
-      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: zerapix/reusable-workflows/all-checkout@test
       - uses: ./.reusable-workflows/py-setup-project
         with:
           GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
@@ -120,5 +120,5 @@ jobs:
 
 #  # We now automatically analyze code for any PR that targets the main branch; so this is duplicative now.
 #  analyze:
-#    uses: zerapix/reusable-workflows/.github/workflows/py-analyze.yml@z_v2
+#    uses: zerapix/reusable-workflows/.github/workflows/py-analyze.yml@test
 #    secrets: inherit

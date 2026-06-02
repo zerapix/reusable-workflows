@@ -11,7 +11,7 @@ run-name: Testing pr ${{ github.event.number }} for commit ${{ github.event.afte
 name: Run Tests
 jobs:
   redirect:
-    uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@z_v2
+    uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@test
     secrets: inherit
     with:
       lang: py
