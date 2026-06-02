@@ -15,7 +15,7 @@ runs:
 
     - name: zReleaseBot Token
       id: my-app
-      uses: getsentry/action-github-app-token@v2
+      uses: getsentry/action-github-app-token@v4
       with:
         app_id: ${{ inputs.ZRELEASEBOT_APP_ID }}
         private_key: ${{ inputs.ZRELEASEBOT_PRIVATE_KEY }}

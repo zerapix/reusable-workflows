@@ -60,7 +60,7 @@ runs:
         echo "$EOF" >> $GITHUB_OUTPUT
 
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v3
       id: create-release
       with:
         tag_name: refs/tags/${{ steps.tag-out.outputs.value }}
