@@ -1,0 +1,113 @@
+# Creates a release; if you want to use this in other projects a better start is probably
+# one of the py-merge-to-main-* workflows (which in turn can use this reusable workflow).
+on:
+  workflow_call:
+    inputs:
+      need-testing-db:
+        type: boolean
+        default: false
+        description: If DB service is needed for testing.
+      lang:
+        type: string
+        description: Main project language, currently either `py` or `js`.
+        required: true
+
+      # TODO: Will probably/eventually want a 'runs-on` input here, to support arm64 for django projects, etc
+      # TODO: (when we eventually want to do that).
+
+defaults:
+  run:
+    shell: bash
+
+concurrency: create-release
+run-name: Create Release + Auto Deploy by @${{ github.actor }}
+name: Create Release
+jobs:
+  test-with-db-if-needed:
+    name: Test With DB If Needed
+    if: ${{ inputs.lang == 'py' && inputs.need-testing-db }}
+    uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@z_v2
+    with:
+      # TODO: May want to pass in here that we SHOULD NOT do a slot-deploy.
+      # TODO: For now, we know that 'py' projects don't need/do that; so that is enough for now.
+      need-testing-db: true
+      lang: ${{ inputs.lang }}
+    secrets: inherit
+
+  create-release:
+    name: Create Release
+    needs: test-with-db-if-needed
+    runs-on: ubuntu-latest
+    # If are already on a 'release' commit, we should skip this job.
+    # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
+    if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
+    outputs:
+      # github.event.inputs.environment == 'prod' && steps.prod_step.outputs.url || steps.staging_step.outputs.url
+      # case(inputs.cache-retain == 'true', '(with forced cache-retain)', '')
+      # Original: `created-release-tag-name: ${{ steps.release.outputs.created-release-tag-name }}`
+      created-release-tag-name: ${{ case(inputs.lang == 'js', steps.release-js.outputs.created-release-tag-name, steps.release-py.outputs.created-release-tag-name)  }}
+    steps:
+      - uses: zerapix/reusable-workflows/all-checkout-writable@z_v2
+        with:
+          zreleasebot_app_id: ${{ secrets.ZRELEASEBOT_APP_ID }}
+          zreleasebot_private_key: ${{ secrets.ZRELEASEBOT_PRIVATE_KEY }}
+
+      # ******************************************************
+      # --------------------- Python -------------------------
+
+      - uses: ./.reusable-workflows/py-setup-project
+        if: ${{ inputs.lang == 'py' }}
+        name: py - Setup Project
+        with:
+          GEMFURY_DEPLOY_TOKEN: ${{ secrets.GEMFURY_DEPLOY_TOKEN }}
+
+      - uses: ./.reusable-workflows/py-run-tests
+        if: ${{ inputs.lang == 'py' && !inputs.need-testing-db }}
+        name: Python - Normal Test (without DB)
+
+      - uses: ./.reusable-workflows/py-create-release
+        if: ${{ inputs.lang == 'py' }}
+        name: Python - Create Release
+        id: release-py
+
+
+      # **********************************************************
+      # --------------------- Javascript -------------------------
+
+      - uses: ./.reusable-workflows/js-setup-project
+        if: ${{ inputs.lang == 'js' }}
+        name: js - Setup Project
+
+      - name: js - Copy Proper `.version.json` config file.
+        if: ${{ inputs.lang == 'js' }}
+        shell: bash
+        run: cp .reusable-workflows/versionsrc-config/javascript.versionrc.json .versionrc.json
+
+      - uses: ./.reusable-workflows/all-commit-and-tag-release
+        if: ${{ inputs.lang == 'js' }}
+        name: js - Commit, Tag and Deploy Release
+        id: release-js
+
+  # Create Separate Job, to distinguish release-creation from deployment
+  # (release could have succeeded but deployment fail, can easily re-run deployment without running create-release again)
+  deploy-release:
+    name: Trigger Release Auto Deploy
+    needs: create-release
+    runs-on: ubuntu-latest
+    # If are already on a 'release' commit, we should skip this job.
+    # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
+    if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
+    steps:
+      - name: Release Deployment Thunk
+        run: echo "Deployed Tag ${{ needs.create-release.outputs.created-release-tag-name }}"
+      - name: Trigger Workflow
+        uses: actions/github-script@v7
+        with:
+          # Run a new workflow job, using originating repo's standard `deployment.yml` via workflow_dispatch
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy-auto.yml',
+              ref: 'refs/tags/${{ needs.create-release.outputs.created-release-tag-name }}',
+            })

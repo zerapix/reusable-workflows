@@ -3,14 +3,15 @@ on:
   workflow_call:
 
 name: Analyze Python Code
-run-name: Analyze Python Code for @${{ github.actor }}
+run-name: Analyze JS Code for @${{ github.actor }}
 defaults:
   run:
     shell: bash
 
 jobs:
-  redirect:
-    uses: zerapix/reusable-workflows/.github/workflows/all-analyze.yml@z_v2
+  analyze:
+    uses: zerapix/reusable-workflows/.github/workflows/js-deploy-w-sls.yml
     secrets: inherit
     with:
-      lang: py
+      lang: js
+

@@ -1,5 +1,5 @@
-name: Deploy Python via Serverless
-description: Reusable action to deploy Python via the Serverless Framework.
+name: Deploy Project via Serverless
+description: Reusable action to deploy a project via the Serverless Framework.
 inputs:
   environment:
     description: Environmental name to deploy in.
@@ -24,7 +24,8 @@ runs:
     # Install serverless framework and deploy
     #----------------------------------------------
     - name: check for tag
-      if: ${{ github.ref_type != 'tag' }}
+      # If we have an 'override-stage-name', then we can allow for branch-based deploys; as they are not going to dev/prod.
+      if: ${{ !inputs.override-stage-name && github.ref_type != 'tag' }}
       run: |
         echo '::error ::Can only deploy a tag, instead was using ${{ github.ref_type }} ${{ github.ref_name }}!'
         exit 1
