@@ -9,7 +9,7 @@ run-name: Testing pr ${{ github.event.number }} (w/db) for commit ${{ github.eve
 name: Run Tests
 jobs:
   redirect:
-    uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@z_v2
     secrets: inherit
     with:
       need-testing-db: true

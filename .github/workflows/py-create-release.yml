@@ -11,7 +11,7 @@ run-name: Create Release + Auto Deploy by @${{ github.actor }}
 name: Create Release
 jobs:
   redirect:
-    uses: zerapix/reusable-workflows/.github/workflows/all-create-release.yml@test
+    uses: zerapix/reusable-workflows/.github/workflows/all-create-release.yml@z_v2
     secrets: inherit
     with:
       need-testing-db: ${{ inputs.need-testing-db }}
