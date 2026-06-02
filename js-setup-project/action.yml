@@ -18,7 +18,11 @@ runs:
         node-version: "24"
         cache: "yarn"
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
-      run: yarn install --frozen-lockfile
+      # # Would like to run with `--frozen-lockfile`, but I think updating the version number makes the yarn installer
+      # # think a big enough change happened to the package.json that it can't do a `--frozen-lockfile` anymore.
+      # # TODO: Investigate using a `--frozen-lockfile` option someday for yarn in combination with version/release creation.
+      # run: yarn install --frozen-lockfile
+      run: yarn install
       shell: bash
     - name: Finished Echo
       run: echo "Finished installing deps..."
