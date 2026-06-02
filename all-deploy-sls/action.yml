@@ -1,5 +1,5 @@
 name: Deploy Project via Serverless
-description: Reusable action to deploy Python via the Serverless Framework.
+description: Reusable action to deploy a project via the Serverless Framework.
 inputs:
   environment:
     description: Environmental name to deploy in.

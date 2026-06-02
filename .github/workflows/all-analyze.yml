@@ -8,7 +8,7 @@ on:
         required: true
         
 name: Analyze Python Code
-run-name: Analyze JS Code for @${{ github.actor }}
+run-name: Analyze Code for @${{ github.actor }}
 defaults:
   run:
     shell: bash
@@ -47,6 +47,7 @@ jobs:
           # If you are analyzing a compiled language, you can modify the 'build-mode' for that language to customize how
           # your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
         - language: actions
+          build-mode: none
           is-current-lang: true
         - language: javascript-typescript
           build-mode: none

@@ -31,6 +31,7 @@ jobs:
       # TODO: May want to pass in here that we SHOULD NOT do a slot-deploy.
       # TODO: For now, we know that 'py' projects don't need/do that; so that is enough for now.
       need-testing-db: true
+      lang: ${{ inputs.lang }}
     secrets: inherit
 
   create-release:
