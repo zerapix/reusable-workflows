@@ -20,7 +20,7 @@ runs:
         app_id: ${{ inputs.ZRELEASEBOT_APP_ID }}
         private_key: ${{ inputs.ZRELEASEBOT_PRIVATE_KEY }}
     - name: Checkout Project Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         # fetch-depth 0 will check out all the commits and tags needed for release-bumper
         fetch-depth: 0
