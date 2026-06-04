@@ -69,7 +69,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       if: matrix.is-current-lang
 
     # Add any setup steps before running the `github/codeql-action/init` action.

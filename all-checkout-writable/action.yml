@@ -15,12 +15,12 @@ runs:
 
     - name: zReleaseBot Token
       id: my-app
-      uses: getsentry/action-github-app-token@v2
+      uses: getsentry/action-github-app-token@v4.0.0
       with:
-        app_id: ${{ inputs.ZRELEASEBOT_APP_ID }}
-        private_key: ${{ inputs.ZRELEASEBOT_PRIVATE_KEY }}
+        app_id: ${{ inputs.zreleasebot_app_id }}
+        private_key: ${{ inputs.zreleasebot_private_key }}
     - name: Checkout Project Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         # fetch-depth 0 will check out all the commits and tags needed for release-bumper
         fetch-depth: 0

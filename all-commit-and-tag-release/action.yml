@@ -35,7 +35,7 @@ runs:
     # TODO: Won't have access to github event info?  See if this still works in an action
     - name: If Push Fails, Comment On PR About Why
       if: failure() && github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
-      uses: thollander/actions-comment-pull-request@v2
+      uses: thollander/actions-comment-pull-request@v3
       with:
         message: |
           :robot: Release can't be directly created due to another merged PR near same time; this will be released with this other PR's release.
@@ -60,7 +60,7 @@ runs:
         echo "$EOF" >> $GITHUB_OUTPUT
 
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v3
       id: create-release
       with:
         tag_name: refs/tags/${{ steps.tag-out.outputs.value }}
@@ -75,7 +75,7 @@ runs:
     # If we are a `pull_request` event, we can add a comment to it about the release.
     - name: Link From PR to Release
       if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged
-      uses: thollander/actions-comment-pull-request@v2
+      uses: thollander/actions-comment-pull-request@v3
       with:
         message: |
           :robot: Released As ${{ steps.tag-out.outputs.value }}, ${{ steps.create-release.outputs.url }}
