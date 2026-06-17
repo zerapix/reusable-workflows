@@ -1,12 +1,11 @@
 # This workflow is used to run unit tests on something that needs an RDS database running.
 on:
   workflow_call:
-name: Test w/DB
 defaults:
   run:
     shell: bash
 run-name: Testing pr ${{ github.event.number }} (w/db) for commit ${{ github.event.after || '*first*' }}
-name: Run Tests
+name: Run Tests w/DB
 jobs:
   redirect:
     uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@z_v2
