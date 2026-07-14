@@ -20,7 +20,7 @@ runs:
     - name: Enable corepack if needed
       shell: bash
       run: |
-        if grep -q '"packageManagers"' "package.json"; then
+        if grep -q '"packageManager"' "package.json"; then
           echo "using core pack"
           corepack enable
           corepack install
