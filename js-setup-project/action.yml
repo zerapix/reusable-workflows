@@ -20,8 +20,8 @@ runs:
     - name: Enable corepack
       run: corepack enable
       shell: bash
-    - name: Set yarn Version
-      run: yarn set version 4.17.1
+    - name: Install Needed yarn Version
+      run: corepack install
       shell: bash
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       # # Would like to run with `--frozen-lockfile`, but I think updating the version number makes the yarn installer
