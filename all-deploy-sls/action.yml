@@ -36,6 +36,14 @@ runs:
       with:
         node-version: "24"
         cache: "yarn"
+    - name: Enable corepack if needed
+      shell: bash
+      run: |
+        if grep -q '"packageManagers"' "package.json"; then
+          echo "using core pack"
+          corepack enable
+          corepack install
+        fi
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       run: yarn install
       shell: bash
