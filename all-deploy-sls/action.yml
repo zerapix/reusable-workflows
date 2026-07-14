@@ -30,12 +30,6 @@ runs:
         echo '::error ::Can only deploy a tag, instead was using ${{ github.ref_type }} ${{ github.ref_name }}!'
         exit 1
       shell: bash
-    - name: Setup Node.js
-      id: setup_node
-      uses: actions/setup-node@v6
-      with:
-        node-version: "24"
-        cache: "yarn"
     - name: Enable corepack if needed
       shell: bash
       run: |
@@ -44,6 +38,12 @@ runs:
           corepack enable
           corepack install
         fi
+    - name: Setup Node.js
+      id: setup_node
+      uses: actions/setup-node@v6
+      with:
+        node-version: "24"
+        cache: "yarn"
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       run: yarn install
       shell: bash
