@@ -38,12 +38,12 @@ runs:
           corepack enable
           corepack install
         fi
-#    - name: Setup Node.js
-#      id: setup_node
-#      uses: actions/setup-node@v6
-#      with:
-#        node-version: "24"
-#        cache: "yarn"
+    - name: Setup Node.js
+      id: setup_node
+      uses: actions/setup-node@v6
+      with:
+        node-version: "24"
+        cache: "yarn"
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       run: yarn install
       shell: bash
