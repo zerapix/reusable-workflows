@@ -10,7 +10,14 @@ runs:
     # TODO: Copy over the versionsrc-config file to the current root-directory
     - run: echo Running On Ref ${{ github.ref }}
       shell: bash
-
+    - name: Enable corepack if needed
+      shell: bash
+      run: |
+        if grep -q '"packageManager"' "package.json"; then
+          echo "using core pack"
+          corepack enable
+          corepack install
+        fi
     # Just to be sure the lock-file is in good shape + ensure that `commit-and-tag-version` is installed.
     - run: yarn install
       shell: bash
