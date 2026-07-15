@@ -11,12 +11,6 @@ runs:
     #----------------------------------------------
     #       Set-up node + yarn
     #----------------------------------------------
-    - name: Setup Node.js
-      id: setup_node
-      uses: actions/setup-node@v6
-      with:
-        node-version: "24"
-        cache: "yarn"
     - name: Enable corepack if needed
       shell: bash
       run: |
@@ -25,6 +19,12 @@ runs:
           corepack enable
           corepack install
         fi
+    - name: Setup Node.js
+      id: setup_node
+      uses: actions/setup-node@v6
+      with:
+        node-version: "24"
+        cache: "yarn"
     - name: Install Yarn/Serverless Deps Into ${{ steps.setup_node.outputs.node-version }}
       # # Would like to run with `--frozen-lockfile`, but I think updating the version number makes the yarn installer
       # # think a big enough change happened to the package.json that it can't do a `--frozen-lockfile` anymore.
