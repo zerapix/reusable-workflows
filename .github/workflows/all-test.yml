@@ -105,7 +105,8 @@ jobs:
         uses: ./.reusable-workflows/py-run-tests
     services:
       postgres:
-        image: postgres:17
+        # TODO: Someday read project info to figure out what db version to use.
+        image: postgres:18
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: pg-pass
