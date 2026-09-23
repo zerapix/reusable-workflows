@@ -7,26 +7,15 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Retrieve Project Package via tomllib with Poetry
+    - name: Configure .versionrc.json File with Poetry
       if: env.PKG_MANAGER == 'poetry'
       shell: bash
-      run: |
-        PY_OUTPUT=$(poetry run -q python -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['tool']['poetry']['name'], end='')")
-        echo "PY_Z_MODULE=$PY_OUTPUT" | tr - _ >> $GITHUB_ENV
+      run: poetry run -q python .reusable-workflows/versionsrc-config/python-versionrc.py
 
-    - name: Retrieve Project Package via tomllib with UV
+    - name: Configure .versionrc.json File with UV
       if: env.PKG_MANAGER == 'uv'
       shell: bash
-      run: |
-        PY_OUTPUT=$(uv run -q python -c "import tomllib; import pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['name'], end='')")
-        echo "PY_Z_MODULE=$PY_OUTPUT" | tr - _ >> $GITHUB_ENV
+      run: uv run -q python .reusable-workflows/versionsrc-config/python-versionrc.py
 
-    - name: Copy + Configure .versionrc.json File...
-      shell: bash
-      run: |
-        cp .reusable-workflows/versionsrc-config/python.versionrc.json .versionrc.json
-        echo "`jq '.bumpFiles[2].filename="'$PY_Z_MODULE'/__init__.py"' .versionrc.json`" > .versionrc.json
-      env:
-        PY_Z_MODULE: ${{ env.PY_Z_MODULE }}
     - uses: ./.reusable-workflows/all-commit-and-tag-release
       id: release

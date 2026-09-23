@@ -18,9 +18,6 @@
     }, {
       "filename": "pyproject.toml",
       "updater": "./.reusable-workflows/versionsrc-config/python-toml"
-    }, {
-      "filename": "main_module_file/__init__.py",
-      "updater": "./.reusable-workflows/versionsrc-config/python-init"
     }
   ]
 }
