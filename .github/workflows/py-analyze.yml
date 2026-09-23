@@ -10,7 +10,7 @@ defaults:
 
 jobs:
   redirect:
-    uses: zerapix/reusable-workflows/.github/workflows/all-analyze.yml@z_v2
+    uses: zerapix/reusable-workflows/.github/workflows/all-analyze.yml@test
     secrets: inherit
     with:
       lang: py

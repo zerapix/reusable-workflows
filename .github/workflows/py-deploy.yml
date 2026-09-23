@@ -22,7 +22,7 @@ on:
 
 jobs:
   redirect:
-    uses: zerapix/reusable-workflows/.github/workflows/all-deploy.yml@z_v2
+    uses: zerapix/reusable-workflows/.github/workflows/all-deploy.yml@test
     secrets: inherit
     with:
       lang: py
