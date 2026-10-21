@@ -58,7 +58,9 @@ jobs:
         # Format: {last-version-tag}-{num-commits-since-version-tag}-{git-hash}
       - name: Set Pre-Release Version
         if: ${{ inputs.lang == 'js' && inputs.pre-release }}
-        run: yarn version --no-git-tag-version --new-version "$( (git describe --tags --long | tr -d " v\n\t\r") )"
+        run: |
+          version="$( (git describe --tags --long 2>/dev/null || true) | tr -d " v\n\t\r")"
+          if [ -n "$version" ]; then npm pkg set version="$version"; fi
 
       - uses: ./.reusable-workflows/all-deploy-sls
         with:
