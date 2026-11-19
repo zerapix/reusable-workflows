@@ -1,0 +1,59 @@
+on:
+  workflow_call:
+    inputs:
+      commands:
+        type: string
+        default: |
+          yarn typecheck
+          yarn test run
+        description: Shell commands to run, one per line. The job fails on the first one that fails.
+      peer-sets:
+        type: string
+        default: '[{"name": "default"}]'
+        description: >-
+          JSON list of package sets to run the commands against, one job each.
+          Each entry has a `name` and an optional `packages` string, like
+          "react@^18 react-dom@^18". Those packages are swapped in with `yarn up` before the commands run.
+name: Run JS Tests
+defaults:
+  run:
+    shell: bash
+jobs:
+  test:
+    name: ${{ matrix.peers.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        peers: ${{ fromJSON(inputs.peer-sets) }}
+    steps:
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: ./.reusable-workflows/js-setup-project
+
+      - name: Install ${{ matrix.peers.name }}
+        if: ${{ matrix.peers.packages }}
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: 'false'
+          PACKAGES: ${{ matrix.peers.packages }}
+        run: yarn up $PACKAGES
+
+      - name: Check the installed versions
+        if: ${{ matrix.peers.packages }}
+        env:
+          PACKAGES: ${{ matrix.peers.packages }}
+        run: |
+          for spec in $PACKAGES; do
+            name=${spec%@*}
+            major=${spec##*@}
+            major=${major#[~^]}
+            major=${major%%.*}
+            version=$(node -p "require('./node_modules/$name/package.json').version")
+            echo "$name $version"
+            if [[ $major =~ ^[0-9]+$ && $version != "$major".* ]]; then
+              echo "::error::$name is $version, but $spec was asked for."
+              exit 1
+            fi
+          done
+
+      - name: Run ${{ matrix.peers.name }}
+        run: ${{ inputs.commands }}
