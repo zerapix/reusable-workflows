@@ -78,7 +78,7 @@ jobs:
                 const major = majorOf(range)
                 return types in dev && major ? [`${name}@${range}`, `${types}@^${major}`] : [`${name}@${range}`]
               })
-              return { name: `tests (${labelFor(peers, i)})`, packages: packages.join(' ') }
+              return { name: `tests (${labelFor(peers, i)})`, packages: packages.join('\n') }
             })
           }
 
@@ -137,14 +137,16 @@ jobs:
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: 'false'
           PACKAGES: ${{ matrix.peers.packages }}
-        run: yarn up $PACKAGES
+        run: |
+          mapfile -t specs <<< "$PACKAGES"
+          yarn up "${specs[@]}"
 
       - name: Check the installed versions
         if: ${{ matrix.peers.packages }}
         env:
           PACKAGES: ${{ matrix.peers.packages }}
         run: |
-          for spec in $PACKAGES; do
+          while IFS= read -r spec; do
             name=${spec%@*}
             major=${spec##*@}
             major=${major#[~^]}
@@ -155,7 +157,7 @@ jobs:
               echo "::error::$name is $version, but $spec was asked for."
               exit 1
             fi
-          done
+          done <<< "$PACKAGES"
 
       - name: Run tests
         run: ${{ fromJSON(needs.plan.outputs.tests) }}
