@@ -25,7 +25,7 @@ name: Create Release
 jobs:
   test-with-db-if-needed:
     name: Test With DB If Needed
-    if: ${{ inputs.lang == 'py' && inputs.need-testing-db }}
+    if: ${{ inputs.lang == 'py' && inputs.need-testing-db && (github.event_name != 'pull_request' || github.event.pull_request.merged) }}
     uses: zerapix/reusable-workflows/.github/workflows/all-test.yml@z_v2
     with:
       # TODO: May want to pass in here that we SHOULD NOT do a slot-deploy.
@@ -40,7 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     # If are already on a 'release' commit, we should skip this job.
     # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
-    if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
+    # Closing a PR without merging it also sends a `pull_request: closed` event.
+    # Only a merged PR should make a release, so every job here checks `merged`.
+    if: "${{ always() && (github.event_name != 'pull_request' || github.event.pull_request.merged) && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
     outputs:
       # github.event.inputs.environment == 'prod' && steps.prod_step.outputs.url || steps.staging_step.outputs.url
       # case(inputs.cache-retain == 'true', '(with forced cache-retain)', '')
@@ -96,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     # If are already on a 'release' commit, we should skip this job.
     # We have `always()` so this job still runs even if `test-with-db-if-needed` is skipped.
-    if: "${{ always() && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
+    if: "${{ always() && (github.event_name != 'pull_request' || github.event.pull_request.merged) && !startsWith(github.event.head_commit.message, 'chore(release): ') && !failure() && !cancelled() }}"
     steps:
       - name: Release Deployment Thunk
         run: echo "Deployed Tag ${{ needs.create-release.outputs.created-release-tag-name }}"

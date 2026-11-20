@@ -1,0 +1,17 @@
+# Normally called when a merge to the main branch happens.
+on:
+  workflow_call:
+name: Publish JavaScript Lib
+concurrency: publish
+defaults:
+  run:
+    shell: bash
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: ./.reusable-workflows/js-setup-project
+      - uses: ./.reusable-workflows/js-publish-fury
+        with:
+          GEMFURY_PUBLISH_TOKEN: ${{ secrets.GEMFURY_PUBLISH_TOKEN }}

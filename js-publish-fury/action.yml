@@ -1,0 +1,21 @@
+name: Publish to Gemfury
+description: Build and publish a JavaScript library to Gemfury with Yarn.
+inputs:
+  GEMFURY_PUBLISH_TOKEN:
+    description: Gemfury Publish Token
+    required: true
+  registry:
+    description: Gemfury npm registry to publish to. Yarn needs the trailing slash.
+    default: https://npm.fury.io/zerapix/
+runs:
+  using: composite
+  steps:
+    - name: Build Library
+      shell: bash
+      run: yarn build
+    - name: Publish to Gemfury
+      shell: bash
+      env:
+        YARN_NPM_PUBLISH_REGISTRY: ${{ inputs.registry }}
+        YARN_NPM_AUTH_TOKEN: ${{ inputs.GEMFURY_PUBLISH_TOKEN }}
+      run: yarn npm publish --tolerate-republish
