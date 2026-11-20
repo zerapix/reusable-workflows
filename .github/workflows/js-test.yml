@@ -1,36 +1,138 @@
 on:
   workflow_call:
     inputs:
-      commands:
+      extra-commands:
         type: string
-        default: |
-          yarn typecheck
-          yarn test run
-        description: Shell commands to run, one per line. The job fails on the first one that fails.
-      peer-sets:
-        type: string
-        default: '[{"name": "default"}]'
+        default: ''
         description: >-
-          JSON list of package sets to run the commands against, one job each.
-          Each entry has a `name` and an optional `packages` string, like
-          "react@^18 react-dom@^18". Those packages are swapped in with `yarn up` before the commands run.
+          More commands to run in the checks job, one per line, after the
+          standard scripts (lint, format:check, build, build-storybook).
 name: Run JS Tests
 defaults:
   run:
     shell: bash
 jobs:
-  test:
+  plan:
+    name: plan
+    runs-on: ubuntu-latest
+    outputs:
+      checks: ${{ steps.plan.outputs.checks }}
+      tests: ${{ steps.plan.outputs.tests }}
+      peer-sets: ${{ steps.plan.outputs.peer-sets }}
+    steps:
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - name: Read package.json
+        id: plan
+        env:
+          EXTRA_COMMANDS: ${{ inputs.extra-commands }}
+        run: |
+          node - <<'EOF'
+          const fs = require('fs')
+
+          const CHECK_SCRIPTS = ['lint', 'format:check', 'build', 'build-storybook']
+          const TEST_SCRIPTS = ['typecheck', 'test']
+
+          function majorOf(range) {
+            const match = range.match(/\d+/)
+            return match ? match[0] : null
+          }
+
+          function typesPackageFor(name) {
+            return name.startsWith('@')
+              ? `@types/${name.slice(1).replace('/', '__')}`
+              : `@types/${name}`
+          }
+
+          // Peers that list the same ranges, like react and react-dom, are named once,
+          // by the shortest name in the group, so a job reads "react ^18.2, @mui/material ^6.4".
+          function labelFor(peers, i) {
+            const groups = new Map()
+            for (const [name, ranges] of peers) {
+              const key = ranges.join('||')
+              const shortest = groups.get(key)
+              if (!shortest || name.length < shortest.name.length) {
+                groups.set(key, { name, range: ranges[Math.min(i, ranges.length - 1)] })
+              }
+            }
+            return [...groups.values()].map(({ name, range }) => `${name} ${range}`).join(', ')
+          }
+
+          // A peer range like "^18.2 || ^19" lists the versions the library supports,
+          // oldest first. Test job 1 uses the first range of every such peer, job 2 the
+          // second, and so on. So "react: ^18.2 || ^19" and "@mui/material: ^6.4 || ^7"
+          // give one job on React 18 + MUI 6 and one on React 19 + MUI 7.
+          function peerSets(pkg) {
+            const dev = pkg.devDependencies || {}
+            const peers = Object.entries(pkg.peerDependencies || {})
+              .map(([name, range]) => [name, range.split('||').map((r) => r.trim())])
+              .filter(([name, ranges]) => ranges.length > 1 && name in dev)
+            const count = Math.max(0, ...peers.map(([, ranges]) => ranges.length))
+            if (count === 0) {
+              return [{ name: 'tests' }]
+            }
+
+            return Array.from({ length: count }, (_, i) => {
+              const picked = peers.map(([name, ranges]) => [name, ranges[Math.min(i, ranges.length - 1)]])
+              const packages = picked.flatMap(([name, range]) => {
+                const types = typesPackageFor(name)
+                const major = majorOf(range)
+                return types in dev && major ? [`${name}@${range}`, `${types}@^${major}`] : [`${name}@${range}`]
+              })
+              return { name: `tests (${labelFor(peers, i)})`, packages: packages.join(' ') }
+            })
+          }
+
+          function commandsFor(pkg, names, extra = '') {
+            const scripts = pkg.scripts || {}
+            const lines = names.filter((name) => name in scripts).map((name) => `yarn ${name}`)
+            return [...lines, ...extra.split('\n').map((line) => line.trim()).filter(Boolean)].join('\n')
+          }
+
+          function writeOutput(key, value) {
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `${key}=${JSON.stringify(value)}\n`)
+          }
+
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+          const checks = commandsFor(pkg, CHECK_SCRIPTS, process.env.EXTRA_COMMANDS || '')
+          const tests = commandsFor(pkg, TEST_SCRIPTS)
+
+          writeOutput('checks', checks)
+          writeOutput('tests', tests)
+          writeOutput('peer-sets', peerSets(pkg))
+          EOF
+      - name: Show the plan
+        env:
+          CHECKS: ${{ fromJSON(steps.plan.outputs.checks) }}
+          TESTS: ${{ fromJSON(steps.plan.outputs.tests) }}
+          PEER_SETS: ${{ steps.plan.outputs.peer-sets }}
+        run: |
+          printf 'Checks:\n%s\n\nTests:\n%s\n\nPeer sets: %s\n' "$CHECKS" "$TESTS" "$PEER_SETS"
+
+  checks:
+    name: checks
+    needs: plan
+    if: ${{ fromJSON(needs.plan.outputs.checks) != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: zerapix/reusable-workflows/all-checkout@z_v2
+      - uses: ./.reusable-workflows/js-setup-project
+      - name: Run checks
+        run: ${{ fromJSON(needs.plan.outputs.checks) }}
+
+  tests:
     name: ${{ matrix.peers.name }}
+    needs: plan
+    if: ${{ fromJSON(needs.plan.outputs.tests) != '' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        peers: ${{ fromJSON(inputs.peer-sets) }}
+        peers: ${{ fromJSON(needs.plan.outputs.peer-sets) }}
     steps:
       - uses: zerapix/reusable-workflows/all-checkout@z_v2
       - uses: ./.reusable-workflows/js-setup-project
 
-      - name: Install ${{ matrix.peers.name }}
+      - name: Install peer versions
         if: ${{ matrix.peers.packages }}
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: 'false'
@@ -55,5 +157,5 @@ jobs:
             fi
           done
 
-      - name: Run ${{ matrix.peers.name }}
-        run: ${{ inputs.commands }}
+      - name: Run tests
+        run: ${{ fromJSON(needs.plan.outputs.tests) }}
